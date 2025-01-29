@@ -36,29 +36,6 @@ class Vehicle(db.Model, SerializerMixin):
     serialize_rules = ('-services.vehicle', '-client.vehicles')
 
 
-class Mechanic(db.Model, SerializerMixin):
-    __tablename__ = 'mechanics'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    specialty = db.Column(db.String, nullable=False)
-    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
-
-    services = db.relationship('Service', backref='mechanic', cascade="all, delete-orphan")
-    serialize_rules = ('-services.mechanic', '-employee.mechanics')
-
-
-class Employee(db.Model, SerializerMixin):
-    __tablename__ = 'employees'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    category = db.Column(db.String, nullable=False)
-
-    mechanics = db.relationship('Mechanic', backref='employee', cascade="all, delete-orphan")
-    serialize_rules = ('-mechanics.employee',)
-
-
 class Service(db.Model, SerializerMixin):
     __tablename__ = 'services'
 
@@ -71,3 +48,26 @@ class Service(db.Model, SerializerMixin):
     mechanic_id = db.Column(db.Integer, db.ForeignKey('mechanics.id'), nullable=False)
 
     serialize_rules = ('-vehicle.services', '-mechanic.services')
+
+
+class Mechanic(db.Model, SerializerMixin):
+    __tablename__ = 'mechanics'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    specialty = db.Column(db.String, nullable=False)
+
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
+    services = db.relationship('Service', backref='mechanic', cascade="all, delete-orphan")
+    serialize_rules = ('-employee.mechanics', '-services.mechanic')
+
+
+class Employee(db.Model, SerializerMixin):
+    __tablename__ = 'employees'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    category = db.Column(db.String, nullable=False)
+
+    mechanics = db.relationship('Mechanic', backref='employee', cascade="all, delete-orphan")
+    serialize_rules = ('-mechanics.employee',)

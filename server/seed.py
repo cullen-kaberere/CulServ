@@ -39,15 +39,14 @@ if __name__ == '__main__':
                 model=fake.word(),
                 year=fake.year(),
                 client_id=rc(clients).id
-            )
-            
+            ) 
         ]
         db.session.add_all(vehicles)
         db.session.commit()
 
         # Seed employees
         print("Seeding employees...")
-        employees = [Employee(name=fake.name(), category=fake.job())]
+        employees = [Employee(name=fake.name(), category=fake.job()) ]
         db.session.add_all(employees)
         db.session.commit()
 
@@ -58,8 +57,7 @@ if __name__ == '__main__':
                 name=fake.name(),
                 specialty=fake.job(),
                 employee_id=rc(employees).id
-            )
-            
+            ) 
         ]
         db.session.add_all(mechanics)
         db.session.commit()
@@ -73,8 +71,7 @@ if __name__ == '__main__':
                 date=fake.date_between(start_date='-1y', end_date='today'),
                 vehicle_id=rc(vehicles).id,
                 mechanic_id=rc(mechanics).id
-            )
-            
+            ) 
         ]
         db.session.add_all(services)
         db.session.commit()
