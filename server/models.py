@@ -41,13 +41,13 @@ class Service(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String, nullable=False)
-    cost = db.Column(db.Float, nullable=False)
     date = db.Column(db.Date, nullable=False)
 
     vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id'), nullable=False)
     mechanic_id = db.Column(db.Integer, db.ForeignKey('mechanics.id'), nullable=False)
 
     serialize_rules = ('-vehicle.services', '-mechanic.services')
+
 
 
 class Mechanic(db.Model, SerializerMixin):
