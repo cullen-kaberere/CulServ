@@ -9,7 +9,7 @@ const RegisterClient = () => {
     const [selectedClient, setSelectedClient] = useState('');
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/clients')
+        fetch('http://localhost:5555/clients')
             .then((response) => response.json())
             .then((data) => setClients(data))
             .catch((error) => console.error('Error fetching clients:', error));
@@ -21,7 +21,7 @@ const RegisterClient = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:5000/api/clients', {
+        const response = await fetch('http://localhost:5555/clients', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(clientData),

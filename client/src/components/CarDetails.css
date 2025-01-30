@@ -4,6 +4,8 @@ body {
     font-family: Arial, sans-serif;
     background-color: #000; /* Black background */
     color: #fff; /* White text */
+    margin: 0;
+    padding: 0;
 }
 
 /* Navbar */
@@ -31,6 +33,7 @@ body {
     border: 2px solid #ffa500;
     border-radius: 10px;
     text-align: center;
+    margin-top: 2cm;
 }
 
 /* Heading */
