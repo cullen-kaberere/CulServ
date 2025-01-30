@@ -230,6 +230,37 @@ def handle_service_by_id(service_id):
         db.session.commit()
         return make_response(jsonify({"message": "Service deleted successfully"}), 200)
 
+### Get all vehicles associated with a specific client
+@app.route("/clients/<int:client_id>/vehicles", methods=["GET"])
+def get_client_vehicles(client_id):
+    client = db.session.get(Client, client_id)
+    if not client:
+        return make_response(jsonify({"error": "Client not found"}), 404)
+
+    vehicles = [vehicle.to_dict() for vehicle in client.vehicles]
+    return make_response(jsonify(vehicles), 200)
+
+### Get vehicles serviced by a specific mechanic ###
+@app.route("/mechanics/<int:mechanic_id>/vehicles", methods=["GET"])
+def get_mechanic_vehicles(mechanic_id):
+    mechanic = db.session.get(Mechanic, mechanic_id)
+    if not mechanic:
+        return make_response(jsonify({"error": "Mechanic not found"}), 404)
+
+    # Get all vehicles that have been serviced by this mechanic
+    vehicles = {service.vehicle.to_dict() for service in mechanic.services}
+
+    return make_response(jsonify(list(vehicles)), 200)
+
+### Get the client associated with a specific vehicle ###
+@app.route("/vehicles/<int:vehicle_id>/client", methods=["GET"])
+def get_vehicle_client(vehicle_id):
+    vehicle = db.session.get(Vehicle, vehicle_id)
+    if not vehicle:
+        return make_response(jsonify({"error": "Vehicle not found"}), 404)
+
+    return make_response(jsonify(vehicle.client.to_dict()), 200)
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
