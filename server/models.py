@@ -55,7 +55,7 @@ class Mechanic(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    specialty = db.Column(db.String, nullable=False)
+    
 
     employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=False)
     services = db.relationship('Service', backref='mechanic', cascade="all, delete-orphan")

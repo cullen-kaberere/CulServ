@@ -32,6 +32,44 @@ def validate_request_data(data, required_fields):
 def index():
     return '<h1>Vehicle Service Management</h1>'
 
+### CLIENTS ROUTES ###
+@app.route("/clients", methods=["GET", "POST"])
+def handle_clients():
+    if request.method == "GET":
+        clients = [client.to_dict() for client in Client.query.all()]
+        return make_response(jsonify(clients), 200)
+
+    if request.method == "POST":
+        required_fields = ["name", "email"]
+        validation_error = validate_request_data(request.json, required_fields)
+        if validation_error:
+            return validation_error
+
+        new_client = Client(**request.json)
+        db.session.add(new_client)
+        db.session.commit()
+        return make_response(jsonify(new_client.to_dict()), 201)
+
+@app.route("/clients/<int:id>", methods=["GET", "PATCH", "DELETE"])
+def handle_client_by_id(id):
+    client = db.session.get(Client, id)
+    if not client:
+        return make_response(jsonify({"error": "Client not found"}), 404)
+
+    if request.method == "GET":
+        return make_response(jsonify(client.to_dict()), 200)
+
+    if request.method == "PATCH":
+        for key, value in request.json.items():
+            setattr(client, key, value)
+        db.session.commit()
+        return make_response(jsonify(client.to_dict()), 200)
+
+    if request.method == "DELETE":
+        db.session.delete(client)
+        db.session.commit()
+        return make_response(jsonify({"message": "Client deleted"}), 204)
+
 # Vehicles Routes
 @app.route("/vehicles", methods=["GET", "POST"])
 def handle_vehicles():
@@ -78,7 +116,7 @@ def handle_mechanics():
         return make_response(jsonify(mechanics), 200)
 
     if request.method == "POST":
-        required_fields = ["name", "specialty", "employee_id"]
+        required_fields = ["name", "employee_id"]
         validation_error = validate_request_data(request.json, required_fields)
         if validation_error:
             return validation_error
@@ -87,6 +125,7 @@ def handle_mechanics():
         db.session.add(new_mechanic)
         db.session.commit()
         return make_response(jsonify(new_mechanic.to_dict()), 201)
+
 
 @app.route("/mechanics/<int:id>", methods=["GET", "PATCH", "DELETE"])
 def handle_mechanic_by_id(id):
@@ -107,6 +146,45 @@ def handle_mechanic_by_id(id):
         db.session.delete(mechanic)
         db.session.commit()
         return make_response(jsonify({"message": "Mechanic deleted"}), 204)
+    
+### EMPLOYEES ROUTES ###
+@app.route("/employees", methods=["GET", "POST"])
+def handle_employees():
+    if request.method == "GET":
+        employees = [employee.to_dict() for employee in Employee.query.all()]
+        return make_response(jsonify(employees), 200)
+
+    if request.method == "POST":
+        required_fields = ["name", "category"]
+        validation_error = validate_request_data(request.json, required_fields)
+        if validation_error:
+            return validation_error
+
+        new_employee = Employee(**request.json)
+        db.session.add(new_employee)
+        db.session.commit()
+        return make_response(jsonify(new_employee.to_dict()), 201)
+
+@app.route("/employees/<int:id>", methods=["GET", "PATCH", "DELETE"])
+def handle_employee_by_id(id):
+    employee = db.session.get(Employee, id)
+    if not employee:
+        return make_response(jsonify({"error": "Employee not found"}), 404)
+
+    if request.method == "GET":
+        return make_response(jsonify(employee.to_dict()), 200)
+
+    if request.method == "PATCH":
+        for key, value in request.json.items():
+            setattr(employee, key, value)
+        db.session.commit()
+        return make_response(jsonify(employee.to_dict()), 200)
+
+    if request.method == "DELETE":
+        db.session.delete(employee)
+        db.session.commit()
+        return make_response(jsonify({"message": "Employee deleted"}), 204)
+ 
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
