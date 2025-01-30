@@ -1,15 +1,19 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import HomePage from "./HomePage";  // Ensure this matches the actual file name
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./HomePage";
 import RegisterClient from "./RegisterClient";
+import CarDetails from "./CarDetails";
+import ServiceManagement from "./ServiceManagement";
 
 function App() {
   return (
     <Router>
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/register-client" component={RegisterClient} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/register-client" element={<RegisterClient />} />
+        <Route path="/car-details" element={<CarDetails />} />
+        <Route path="/service-management" element={<ServiceManagement />} />
+      </Routes>
     </Router>
   );
 }

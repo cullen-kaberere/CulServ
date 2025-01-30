@@ -1,9 +1,9 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // ✅ Change useHistory to useNavigate
 import "./Homepage.css"; // Import the CSS file
 
 function Homepage() {
-    const history = useHistory();
+  const navigate = useNavigate(); // ✅ Use useNavigate instead of useHistory
 
   return (
     <div className="homepage">
@@ -15,7 +15,7 @@ function Homepage() {
           Our platform helps you effectively manage service needs,  
           optimize maintenance, and reduce downtime.
         </p>
-        <button onClick={() => history.push("/register-client")}>Start</button>
+        <button onClick={() => navigate("/register-client")}>Start</button> {/* ✅ Fixed */}
       </div>
     </div>
   );

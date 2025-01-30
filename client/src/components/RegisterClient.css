@@ -1,129 +1,102 @@
-/* Full-page background */
-.register-page {
-    background-color: black;
-    color: white;
-    height: 100vh;
-    width: 100vw;
+/* RegisterClient.css */
+.register-client-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
-    position: relative;
-  }
-  
-  /* Navbar */
-  .navbar {
-    position: absolute;
-    top: 20px;
-    left: 30px;
-    display: flex;
-    justify-content: space-between;
-    width: 90%;
-  }
-  
-  .logo {
+    height: 100vh;
+    background-color: black;
+    color: orange;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
     font-size: 24px;
     font-weight: bold;
-    color: #ffae00;
-  }
-  
-  .nav-link {
-    font-size: 16px;
-    color: #ffae00;
-    cursor: pointer;
-  }
-  
-  /* Form Container */
-  .form-container {
-    background: transparent;
-    border: 2px solid #ffae00;
-    padding: 30px;
+}
+
+form {
+    background-color: black;
+    border: 2px solid orange;
+    padding: 20px;
     border-radius: 10px;
-    width: 350px;
-  }
-  
-  .form-header {
-    background-color: #ffae00;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0px 0px 10px orange;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 16px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: orange;
     color: black;
     font-weight: bold;
-    font-size: 20px;
     padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-  
-  /* Input Fields */
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  label {
-    font-size: 16px;
-    text-align: left;
-    margin-bottom: 5px;
-  }
-  
-  input {
-    padding: 10px;
-    margin-bottom: 15px;
     border: none;
     border-radius: 5px;
     width: 100%;
-  }
-  
-  /* Submit Button */
-  button {
-    background-color: #ffae00;
-    color: black;
-    border: none;
-    padding: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #e69a00;
-  }
-  
-  /* "If already registered" text */
-  .registered-text {
-    margin-top: 15px;
-    font-size: 14px;
-  }
-  
-  .link {
-    color: #ffae00;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: darkorange;
+}
+
+.existing-client {
+    margin-top: 20px;
+    text-align: center;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.navbar {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-size: 18px;
+}
+
+.navbar a {
+    color: orange;
+    text-decoration: none;
     font-weight: bold;
-    cursor: pointer;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .form-container {
-      width: 90%;
-      padding: 20px;
-    }
-    .navbar {
-      font-size: 18px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .logo {
-      font-size: 20px;
-    }
-    .form-header {
-      font-size: 18px;
-    }
-    .nav-link {
-      font-size: 14px;
-    }
-  }
-  
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.link-text {
+    color: orange;
+    margin-top: 10px;
+}
+
+.link-text a {
+    color: white;
+    text-decoration: none;
+}
+
+.link-text a:hover {
+    text-decoration: underline;
+}

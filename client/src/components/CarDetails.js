@@ -1,93 +1,98 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import "./CarDetails.css"; // Import the CSS file
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './CarDetails.css'; // Keep CSS import
 
-function CarDetails() {
-  const history = useHistory();
-  const [formData, setFormData] = useState({
-    make: "",
-    model: "",
-    year: "",
-    clientId: "",
-  });
+const CarDetails = () => {
+    const navigate = useNavigate();
+    const [clients, setClients] = useState([]);
+    const [selectedClient, setSelectedClient] = useState('');
+    const [carData, setCarData] = useState({ make: '', model: '', year: '' });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    useEffect(() => {
+        fetch('http://localhost:5000/api/clients')
+            .then((response) => response.json())
+            .then((data) => setClients(data))
+            .catch((error) => console.error('Error fetching clients:', error));
+    }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Car Details:", formData);
-    history.push("/service-management"); // Redirect to Service Management Page
-  };
+    const handleChange = (e) => {
+        setCarData({ ...carData, [e.target.name]: e.target.value });
+    };
 
-  return (
-    <div className="car-details-page">
-      {/* Navbar */}
-      <div className="navbar">
-        <span className="logo">CulServ</span>
-        <span className="nav-link" onClick={() => history.push("/")}>
-          Home
-        </span>
-      </div>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await fetch('http://localhost:5000/api/vehicles', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...carData, client_id: selectedClient }),
+        });
 
-      {/* Form Container */}
-      <div className="form-container">
-        <div className="form-header">Add Car Details Here</div>
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>Make:</label>
-            <input
-              type="text"
-              name="make"
-              value={formData.make}
-              onChange={handleChange}
-              required
-            />
+        if (response.ok) {
+            navigate('/service-management'); // Navigate after successful submission
+        } else {
+            console.error('Failed to save car details');
+        }
+    };
 
-            <label>Model:</label>
-            <input
-              type="text"
-              name="model"
-              value={formData.model}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label>Year:</label>
-            <input
-              type="text"
-              name="year"
-              value={formData.year}
-              onChange={handleChange}
-              required
-            />
-
-            <label>ID:</label>
-            <input
-              type="text"
-              name="clientId"
-              value={formData.clientId}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-
-      {/* Already Uploaded? */}
-      <p className="uploaded-text">
-        If already uploaded car detail:{" "}
-        <span onClick={() => history.push("/service-management")} className="link">
-          Service page
-        </span>
-      </p>
-    </div>
-  );
-}
+    return (
+        <div>
+            <nav className="navbar">
+                <div>CulServ</div>
+                <a href="/service-management">Home</a>
+            </nav>
+            <div className="car-details-container">
+                <h2>Add Car Details Here</h2>
+                <form onSubmit={handleSubmit}>
+                    <label>Client:</label>
+                    <select
+                        value={selectedClient}
+                        onChange={(e) => setSelectedClient(e.target.value)}
+                        required
+                    >
+                        <option value="">Select Client</option>
+                        {clients.map((client) => (
+                            <option key={client.id} value={client.id}>
+                                {client.name}
+                            </option>
+                        ))}
+                    </select>
+    
+                    <label>Make:</label>
+                    <input
+                        type="text"
+                        name="make"
+                        value={carData.make}
+                        onChange={handleChange}
+                        required
+                    />
+    
+                    <label>Model:</label>
+                    <input
+                        type="text"
+                        name="model"
+                        value={carData.model}
+                        onChange={handleChange}
+                        required
+                    />
+    
+                    <label>Year:</label>
+                    <input
+                        type="number"
+                        name="year"
+                        value={carData.year}
+                        onChange={handleChange}
+                        required
+                    />
+    
+                    <button type="submit">Go to Service</button>
+                </form>
+                <p className="footer-note">
+                    If already uploaded car detail: <a href="/service-management">Service page</a>
+                </p>
+            </div>
+        </div>
+    );
+    
+};
 
 export default CarDetails;

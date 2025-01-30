@@ -1,104 +1,99 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import "./ServiceManagement.css";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './ServiceManagement.css'; // Keep CSS import
 
-function ServiceManagement() {
-  const history = useHistory();
-  const [mechanics, setMechanics] = useState([]);
-  const [services, setServices] = useState([]);
-  const [formData, setFormData] = useState({
-    description: "",
-    mechanicId: "",
-  });
+const ServiceManagement = () => {
+    const navigate = useNavigate();
+    const [services, setServices] = useState([]);
+    const [vehicles, setVehicles] = useState([]);
+    const [mechanics, setMechanics] = useState([]);
+    const [serviceData, setServiceData] = useState({ description: '', vehicle_id: '', mechanic_id: '' });
 
-  // Fetch mechanics from API (Replace with actual endpoint)
-  useEffect(() => {
-    fetch("/api/mechanics") // Example API call
-      .then((res) => res.json())
-      .then((data) => setMechanics(data));
-  }, []);
+    useEffect(() => {
+        fetch('http://localhost:5000/api/vehicles')
+            .then((response) => response.json())
+            .then((data) => setVehicles(data))
+            .catch((error) => console.error('Error fetching vehicles:', error));
 
-  // Fetch existing services (Replace with actual endpoint)
-  useEffect(() => {
-    fetch("/api/services") // Example API call
-      .then((res) => res.json())
-      .then((data) => setServices(data));
-  }, []);
+        fetch('http://localhost:5000/api/mechanics')
+            .then((response) => response.json())
+            .then((data) => setMechanics(data))
+            .catch((error) => console.error('Error fetching mechanics:', error));
+    }, []);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const handleChange = (e) => {
+        setServiceData({ ...serviceData, [e.target.name]: e.target.value });
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitted Service:", formData);
-    // Send service data to API (Replace with actual endpoint)
-    fetch("/api/services", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    }).then(() => history.push("/")); // Redirect or update UI
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await fetch('http://localhost:5000/api/services', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(serviceData),
+        });
 
-  return (
-    <div className="service-management">
-      {/* Navbar */}
-      <div className="navbar">
-        <span className="logo">CulServ</span>
-        <span className="nav-link" onClick={() => history.push("/")}>Home</span>
-      </div>
+        if (response.ok) {
+            navigate('/'); // Navigate back to home after submission
+        } else {
+            console.error('Failed to submit service');
+        }
+    };
 
-      {/* Form Section */}
-      <div className="form-container">
-        <div className="form-header">Add Car Details Here</div>
-        <form onSubmit={handleSubmit}>
-          <label>Service Description:</label>
-          <input
-            type="text"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-
-          <label>Select Mechanic:</label>
-          <select name="mechanicId" value={formData.mechanicId} onChange={handleChange} required>
-            <option value="">Select Mechanic</option>
-            {mechanics.map((mech) => (
-              <option key={mech.id} value={mech.id}>{mech.name}</option>
-            ))}
-          </select>
-
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-
-      {/* Search & Services Table */}
-      <div className="services-section">
-        <button className="search-btn">Search</button>
-        <div className="services-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Names</th>
-                <th>Vehicle Make and Model</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {services.map((service, index) => (
-                <tr key={index}>
-                  <td>{service.clientName}</td>
-                  <td>{service.vehicleMake}, {service.vehicleModel}</td>
-                  <td>{service.description}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    return (
+        <div>
+            <nav className="navbar">
+                <div>CulServ</div>
+                <a href="/">Home</a>
+            </nav>
+            <div className="service-management-container">
+                <h2>Service Management</h2>
+                <form onSubmit={handleSubmit}>
+                    <label>Vehicle:</label>
+                    <select
+                        name="vehicle_id"
+                        value={serviceData.vehicle_id}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select Vehicle</option>
+                        {vehicles.map((vehicle) => (
+                            <option key={vehicle.id} value={vehicle.id}>
+                                {vehicle.make} {vehicle.model}
+                            </option>
+                        ))}
+                    </select>
+    
+                    <label>Mechanic:</label>
+                    <select
+                        name="mechanic_id"
+                        value={serviceData.mechanic_id}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select Mechanic</option>
+                        {mechanics.map((mechanic) => (
+                            <option key={mechanic.id} value={mechanic.id}>
+                                {mechanic.name}
+                            </option>
+                        ))}
+                    </select>
+    
+                    <label>Service Description:</label>
+                    <input
+                        type="text"
+                        name="description"
+                        value={serviceData.description}
+                        onChange={handleChange}
+                        required
+                    />
+    
+                    <button type="submit">Submit Service</button>
+                </form>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+    
+};
 
 export default ServiceManagement;

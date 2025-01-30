@@ -1,50 +1,64 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import "./RegisterClient.css";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './RegisterClient.css'; // Keep CSS import
 
-function RegisterClient() {
-  const history = useHistory(); // Correct usage in React Router v5
-  const [formData, setFormData] = useState({ name: "", email: "" });
+const RegisterClient = () => {
+    const navigate = useNavigate();
+    const [clients, setClients] = useState([]);
+    const [clientData, setClientData] = useState({ name: '', email: '' });
+    const [selectedClient, setSelectedClient] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    useEffect(() => {
+        fetch('http://localhost:5000/api/clients')
+            .then((response) => response.json())
+            .then((data) => setClients(data))
+            .catch((error) => console.error('Error fetching clients:', error));
+    }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Client Data:", formData);
-    history.push("/car-details"); // Correct usage in React Router v5
-  };
+    const handleChange = (e) => {
+        setClientData({ ...clientData, [e.target.name]: e.target.value });
+    };
 
-  return (
-    <div className="register-page">
-      {/* Navbar */}
-      <div className="navbar">
-        <span className="logo">CulServ</span>
-        <span className="nav-link" onClick={() => history.push("/")}>Home</span> {/* Fix */}
-      </div>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await fetch('http://localhost:5000/api/clients', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(clientData),
+        });
 
-      {/* Registration Form */}
-      <div className="form-container">
-        <div className="form-header">Register Client Here</div>
-        <form onSubmit={handleSubmit}>
-          <label>Names:</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+        if (response.ok) {
+            navigate('/car-details');
+        } else {
+            console.error('Failed to register client');
+        }
+    };
 
-          <label>Email:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+    return (
+        <div className="register-client-container">
+            <h2>Register Client</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Name:</label>
+                <input type="text" name="name" value={clientData.name} onChange={handleChange} required />
 
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+                <label>Email:</label>
+                <input type="email" name="email" value={clientData.email} onChange={handleChange} required />
 
-      {/* Already Registered? */}
-      <p className="registered-text">
-        If already registered: 
-        <span onClick={() => history.push("/car-details")} className="link"> Car Details</span> {/* Fix */}
-      </p>
-    </div>
-  );
-}
+                <button type="submit">Add Car</button>
+            </form>
+
+            <div className="existing-client">
+                <label>If already registered:</label>
+                <select value={selectedClient} onChange={(e) => setSelectedClient(e.target.value)}>
+                    <option value="">Select Client</option>
+                    {clients.map((client) => (
+                        <option key={client.id} value={client.id}>{client.name}</option>
+                    ))}
+                </select>
+                <button onClick={() => navigate('/car-details')}>Car Details</button>
+            </div>
+        </div>
+    );
+};
 
 export default RegisterClient;
