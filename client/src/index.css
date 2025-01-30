@@ -5,3 +5,7 @@
   --text: hsla(0, 0%, 100%, 0.88);
 }
 
+body {
+    margin: 0;
+    padding: 0;
+}
