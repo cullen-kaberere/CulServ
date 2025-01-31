@@ -202,7 +202,7 @@ def handle_services():
     services = Service.query.all()
     return make_response(jsonify([service.to_dict() for service in services]), 200)
 
-@app.route("/services/<int:service_id>", methods=["GET", "PUT", "DELETE"])
+@app.route("/services/<int:service_id>", methods=["GET", "PATCH", "DELETE"])
 def handle_service_by_id(service_id):
     service = Service.query.get(service_id)
 
@@ -212,13 +212,7 @@ def handle_service_by_id(service_id):
     if request.method == "GET":
         return make_response(jsonify(service.to_dict()), 200)
 
-    elif request.method == "PUT":
-        required_fields = ["description", "vehicle_id", "mechanic_id"]
-        validation_error = validate_request_data(request.json, required_fields)
-        if validation_error:
-            return validation_error
-
-        # Update the service details
+    elif request.method == "PATCH":  # Allow partial updates
         for key, value in request.json.items():
             setattr(service, key, value)
 
@@ -229,6 +223,7 @@ def handle_service_by_id(service_id):
         db.session.delete(service)
         db.session.commit()
         return make_response(jsonify({"message": "Service deleted successfully"}), 200)
+
 
 ### Get all vehicles associated with a specific client
 @app.route("/clients/<int:client_id>/vehicles", methods=["GET"])
