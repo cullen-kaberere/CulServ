@@ -6,6 +6,7 @@
     padding: 15px 30px;
     background-color: #000; /* Black background */
     color: #f90; /* Orange text */
+    width: 95%;
   }
   
   .navbar-brand {
