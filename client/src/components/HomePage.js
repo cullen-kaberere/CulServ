@@ -7,7 +7,6 @@ function Homepage() {
 
   return (
     <div className="homepage">
-      <nav className="navbar">CulServ</nav>
       <div className="content">
         <h1>Welcome to <span className="highlight">CulServ!</span></h1>
         <p>

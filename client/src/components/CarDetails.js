@@ -36,10 +36,7 @@ const CarDetails = () => {
 
     return (
         <div>
-            <nav className="navbar">
-                <div>CulServ</div>
-                <a href="/service-management">Home</a>
-            </nav>
+            
             <div className="car-details-container">
                 <h2>Add Car Details Here</h2>
                 <form onSubmit={handleSubmit}>
