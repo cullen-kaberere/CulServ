@@ -4,7 +4,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #000; /* Black background */
+    background-color: #00000000; /* Black background */
     color: #f90; /* Orange text */
     width: 95%;
   }
