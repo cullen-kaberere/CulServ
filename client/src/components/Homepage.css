@@ -1,7 +1,7 @@
 /* Full-screen background with image slideshow */
 .homepage {
   position: relative;
-  height: 100vh;
+  height: 83vh;
   width: 100%;
   overflow: hidden;
   display: flex;
