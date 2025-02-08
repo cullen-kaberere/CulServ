@@ -31,9 +31,9 @@
 /* Keyframes for the slideshow */
 @keyframes slideshow {
   0% { background-image: url('../images/pic1.jpg'); }
-  25% { background-image: url('../images/Pic2.jpg'); }
+  25% { background-image: url('../images/Pic8.jpg'); }
   50% { background-image: url('../images/Pic3.jpg'); }
-  75% { background-image: url('../images/Pic4.jpg'); }
+  75% { background-image: url('../images/Pic6.jpg'); }
   100% { background-image: url('../images/pic1.jpg'); }
 }
 
