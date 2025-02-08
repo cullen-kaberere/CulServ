@@ -36,8 +36,8 @@ const RegisterClient = () => {
 
     return (
         <div className="register-client-container">
-            <h2>Register Client</h2>
-            <form onSubmit={handleSubmit}>
+            <h2>Register Client Here!</h2>
+            <form className='form-class' onSubmit={handleSubmit}>
                 <label>Name:</label>
                 <input type="text" name="name" value={clientData.name} onChange={handleChange} required />
 

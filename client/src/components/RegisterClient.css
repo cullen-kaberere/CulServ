@@ -1,31 +1,35 @@
-body{
+body {
     margin: 0;
     padding: 0;
-  }
-/* RegisterClient.css */
+    background-image: url('../images/client1.jpg'); /* Add your background image */
+    background-size: cover; /* Ensure the background covers the entire screen */
+    background-position: center;
+    background-attachment: fixed; /* Keeps the background static during scrolling */
+    color: orange;
+    font-family: Arial, sans-serif;
+}
+
 .register-client-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: black;
-    color: orange;
-    font-family: Arial, sans-serif;
 }
 
 h2 {
     font-size: 24px;
     font-weight: bold;
+    text-shadow: 0 0 10px black; /* Adds a glowing effect for readability */
 }
 
-form {
-    background-color: black;
+.form-class {
+    background-color: rgba(0, 0, 0, 0.527); /* Translucent background */
     border: 2px solid orange;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    width: 300px;
+    width: 550px;
     box-shadow: 0px 0px 10px orange;
 }
 
@@ -33,6 +37,7 @@ label {
     display: block;
     margin: 10px 0 5px;
     font-size: 16px;
+    text-shadow: 0 0 5px black; /* Adds a glow to the text */
 }
 
 input {
@@ -62,6 +67,9 @@ button:hover {
 .existing-client {
     margin-top: 20px;
     text-align: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Translucent section for the dropdown */
+    padding: 10px;
+    border-radius: 5px;
 }
 
 select {
