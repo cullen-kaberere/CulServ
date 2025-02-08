@@ -1,113 +1,123 @@
-body{
-  margin: 0;
-  padding: 0;
-}
-/* Full-screen background */
+/* Full-screen background with image slideshow */
 .homepage {
-    background-color: black;
-    color: white;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0;
-    box-sizing: border-box;
-    margin-top: 3cm;
-  }
-  
-  /* Centered content */
-  .content {
-    max-width: 90%;
-    width: 500px;
-  }
-  
-  /* Style the welcome text */
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 0;
+  box-sizing: border-box;
+  margin-top: 3cm;
+}
+
+.homepage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  animation: slideshow 16s infinite;
+  z-index: -1; /* Places the images behind the content */
+}
+
+/* Keyframes for the slideshow */
+@keyframes slideshow {
+  0% { background-image: url('../images/pic1.jpg'); }
+  25% { background-image: url('../images/Pic2.jpg'); }
+  50% { background-image: url('../images/Pic3.jpg'); }
+  75% { background-image: url('../images/Pic4.jpg'); }
+  100% { background-image: url('../images/pic1.jpg'); }
+}
+
+
+
+
+/* Centered content */
+.content {
+  max-width: 90%;
+  width: 500px;
+  z-index: 1; /* Ensures content stays above the slideshow */
+}
+
+/* Style the welcome text */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+/* Highlight "CulServ!" in yellow */
+.highlight {
+  color: #ffae00;
+}
+
+/* Description text */
+p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+/* Button styling */
+button {
+  background-color: #ffae00;
+  color: black;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: #e69a00;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
   h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-  }
-  
-  /* Highlight "CulServ!" in yellow */
-  .highlight {
-    color: #ffae00;
-  }
-  
-  /* Description text */
-  p {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 30px;
-  }
-  
-  /* Button styling */
-  button {
-    background-color: #ffae00;
-    color: black;
-    border: none;
-    padding: 12px 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  /* Button hover effect */
-  button:hover {
-    background-color: #e69a00;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 1024px) {
-    h1 {
       font-size: 2rem;
-    }
-    p {
+  }
+  p {
       font-size: 1.1rem;
-    }
-    button {
+  }
+  button {
       font-size: 1rem;
       padding: 10px 25px;
-    }
   }
-  
-  @media (max-width: 768px) {
-    .navbar {
-      font-size: 20px;
-      left: 20px;
-    }
-    h1 {
+}
+
+@media (max-width: 768px) {
+  h1 {
       font-size: 1.8rem;
-    }
-    p {
+  }
+  p {
       font-size: 1rem;
-    }
-    button {
+  }
+  button {
       font-size: 0.9rem;
       padding: 10px 20px;
-    }
   }
-  
-  @media (max-width: 480px) {
-    .navbar {
-      font-size: 18px;
-      left: 15px;
-    }
-    h1 {
+}
+
+@media (max-width: 480px) {
+  h1 {
       font-size: 1.6rem;
-    }
-    p {
+  }
+  p {
       font-size: 0.9rem;
-    }
-    button {
+  }
+  button {
       font-size: 0.8rem;
       padding: 8px 18px;
-    }
   }
-  body {
-    margin: 0;
-    padding: 0;
-  }
+}
