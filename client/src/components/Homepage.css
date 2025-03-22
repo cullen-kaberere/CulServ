@@ -1,7 +1,8 @@
 /* Full-screen background with image slideshow */
-.homepage {
+.home-section {
   position: relative;
-  height: 100vh;
+  height: 84vh;
+  margin-top: 0;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -27,6 +28,44 @@
   animation: slideshow 16s infinite;
   z-index: -1; /* Places the images behind the content */
 }
+.service {
+ background-color: rgb(242, 242, 242);
+ height: 83vh;
+ text-align: center;
+}
+
+.why-choose{
+  background-color: white;
+  height: 79vh;
+}
+.placeholder-image {
+  height: 300px;
+  background-image: url('../images/pic1.jpg'); /* Use an absolute path */
+  background-size: cover;
+  background-position: center;
+}
+
+.ready-optimize{
+  background-color: #FF8C00;
+  height: 43vh;
+  text-align: center;
+}
+.btn-ready{
+  background-color: #ffae00;
+  color: black;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 6cm; 
+}
+
+.footer{
+  background-color: white;
+  height: 38vh;
+}
 
 /* Keyframes for the slideshow */
 @keyframes slideshow {
@@ -36,7 +75,9 @@
   75% { background-image: url('../images/Pic6.jpg'); }
   100% { background-image: url('../images/pic1.jpg'); }
 }
-
+h4{
+  color: #e69a00;
+}
 
 
 
