@@ -5,14 +5,17 @@ from flask import Flask, request, make_response, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+import os
 
 # Local imports
 from models import Vehicle, Service, Mechanic, Client, Employee, db
 
 # Setup
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Kaberere@db.phxsuogauipccoagplms.supabase.co:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
