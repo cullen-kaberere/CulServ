@@ -5,14 +5,16 @@ name = "pypi"
 
 [packages]
 ipdb = "0.13.9"
-flask = "*"
 Werkzeug = "2.2.2"
-flask-migrate = "*"
 sqlalchemy-serializer = "*"
-flask-cors = "*"
 faker = "*"
 flask-restful = "*"
+flask = "*"
+flask-cors = "*"
+flask-migrate = "*"
 flask-sqlalchemy = "*"
+flask-bcrypt = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_full_version = "3.8.13"

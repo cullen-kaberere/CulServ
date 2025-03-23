@@ -15,7 +15,7 @@ from models import Vehicle, Service, Mechanic, Client, Employee, db
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Kaberere@db.phxsuogauipccoagplms.supabase.co:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
@@ -35,6 +35,39 @@ def validate_request_data(data, required_fields):
 def index():
     return '<h1>Vehicle Service Management</h1>'
 
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    name = data.get('name')
+    email = data.get('email')
+    password = data.get('password')
+    
+    if not name or not email or not password:
+        return jsonify({"error": "All fields are required"}), 400
+
+    existing_user = Client.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"error": "Email already registered"}), 409
+
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    new_client = Client(name=name, email=email, password=hashed_password)
+    db.session.add(new_client)
+    db.session.commit()
+    
+    return jsonify({"message": "User registered successfully", "user": new_client.to_dict(rules=('-password',))}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    user = Client.query.filter_by(email=email).first()
+    if not user or not bcrypt.check_password_hash(user.password, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+    
+    return jsonify({"message": "Login successful", "user": user.to_dict(rules=('-password',))}), 200
+
 ### CLIENTS ROUTES ###
 @app.route("/clients", methods=["GET", "POST"])
 def handle_clients():
@@ -43,7 +76,7 @@ def handle_clients():
         return make_response(jsonify(clients), 200)
 
     if request.method == "POST":
-        required_fields = ["name", "email"]
+        required_fields = ["name", "email", "password"]
         validation_error = validate_request_data(request.json, required_fields)
         if validation_error:
             return validation_error
