@@ -8,6 +8,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -61,6 +62,17 @@ const Login = () => {
               required
             />
             <button type="submit">Login</button>
+
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={() => setRememberMe(!rememberMe)}
+              />
+              <label htmlFor="rememberMe">Remember me for 30 days</label>
+            </div>
+
 
             {/* Signup Link */}
             <p className="signup-link">

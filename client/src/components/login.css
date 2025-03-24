@@ -31,3 +31,27 @@
     border: 2px solid black !important; /* Black border */
     color: black !important; /* Black text */
 }
+
+/* Checkbox Styling */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between checkbox and label */
+    margin-bottom: 15px;
+    font-weight: bold;
+    margin-left: 2cm;
+  }
+  
+  .checkbox-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #f7941d; /* Change checkbox color */
+    cursor: pointer;
+  }
+  
+  .checkbox-container label {
+    font-size: 14px;
+    color: #252525;
+    cursor: pointer;
+  }
+  
