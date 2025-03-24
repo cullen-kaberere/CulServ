@@ -106,43 +106,121 @@ def handle_client_by_id(id):
         db.session.commit()
         return make_response(jsonify({"message": "Client deleted"}), 204)
 
-# Vehicles Routes
-@app.route("/vehicles", methods=["GET", "POST"])
-def handle_vehicles():
-    if request.method == "GET":
-        vehicles = [vehicle.to_dict() for vehicle in Vehicle.query.all()]
-        return make_response(jsonify(vehicles), 200)
+# **GET Route: Retrieve all vehicles**
+@app.route('/vehicles', methods=['GET'])
+def get_vehicles():
+    vehicles = Vehicle.query.all()
+    vehicle_list = [
+        {
+            'id': vehicle.id,
+            'number_plate': vehicle.number_plate,
+            'current_mileage': vehicle.current_mileage,
+            'last_service_date': vehicle.last_service_date.strftime('%Y-%m-%d')
+        }
+        for vehicle in vehicles
+    ]
+    return jsonify(vehicle_list), 200
 
-    if request.method == "POST":
-        required_fields = ["make", "model", "year", "client_id"]
-        validation_error = validate_request_data(request.json, required_fields)
-        if validation_error:
-            return validation_error
-
-        new_vehicle = Vehicle(**request.json)
-        db.session.add(new_vehicle)
-        db.session.commit()
-        return make_response(jsonify(new_vehicle.to_dict()), 201)
-
-@app.route("/vehicles/<int:id>", methods=["GET", "PATCH", "DELETE"])
-def handle_vehicle_by_id(id):
-    vehicle = db.session.get(Vehicle, id)
+# **GET Route: Retrieve a specific vehicle by ID**
+@app.route('/vehicles/<int:id>', methods=['GET'])
+def get_vehicle(id):
+    vehicle = Vehicle.query.get(id)
     if not vehicle:
-        return make_response(jsonify({"error": "Vehicle not found"}), 404)
+        return jsonify({'error': 'Vehicle not found'}), 404
 
-    if request.method == "GET":
-        return make_response(jsonify(vehicle.to_dict()), 200)
+    vehicle_data = {
+        'id': vehicle.id,
+        'number_plate': vehicle.number_plate,
+        'current_mileage': vehicle.current_mileage,
+        'last_service_date': vehicle.last_service_date.strftime('%Y-%m-%d')
+    }
+    return jsonify(vehicle_data), 200
 
-    if request.method == "PATCH":
-        for key, value in request.json.items():
-            setattr(vehicle, key, value)
-        db.session.commit()
-        return make_response(jsonify(vehicle.to_dict()), 200)
+# **POST Route: Add a new vehicle**
+@app.route('/vehicles', methods=['POST'])
+def add_vehicle():
+    data = request.get_json()
+    if not all(key in data for key in ['number_plate', 'current_mileage', 'last_service_date']):
+        return jsonify({'error': 'Missing required fields'}), 400
 
-    if request.method == "DELETE":
-        db.session.delete(vehicle)
-        db.session.commit()
-        return make_response(jsonify({"message": "Vehicle deleted"}), 204)
+    new_vehicle = Vehicle(
+        number_plate=data['number_plate'],
+        current_mileage=data['current_mileage'],
+        last_service_date=data['last_service_date']
+    )
+    
+    db.session.add(new_vehicle)
+    db.session.commit()
+    
+    return jsonify({'message': 'Vehicle added successfully', 'vehicle': data}), 201
+
+# **PATCH Route: Update a vehicle by ID**
+@app.route('/vehicles/<int:id>', methods=['PATCH'])
+def update_vehicle(id):
+    vehicle = Vehicle.query.get(id)
+    if not vehicle:
+        return jsonify({'error': 'Vehicle not found'}), 404
+
+    data = request.get_json()
+    if 'number_plate' in data:
+        vehicle.number_plate = data['number_plate']
+    if 'current_mileage' in data:
+        vehicle.current_mileage = data['current_mileage']
+    if 'last_service_date' in data:
+        vehicle.last_service_date = data['last_service_date']
+
+    db.session.commit()
+    return jsonify({'message': 'Vehicle updated successfully'}), 200
+
+# **DELETE Route: Delete a vehicle by ID**
+@app.route('/vehicles/<int:id>', methods=['DELETE'])
+def delete_vehicle(id):
+    vehicle = Vehicle.query.get(id)
+    if not vehicle:
+        return jsonify({'error': 'Vehicle not found'}), 404
+
+    db.session.delete(vehicle)
+    db.session.commit()
+    
+    return jsonify({'message': 'Vehicle deleted successfully'}), 200
+
+# # Vehicles Routes
+# @app.route("/vehicles", methods=["GET", "POST"])
+# def handle_vehicles():
+#     if request.method == "GET":
+#         vehicles = [vehicle.to_dict() for vehicle in Vehicle.query.all()]
+#         return make_response(jsonify(vehicles), 200)
+
+#     if request.method == "POST":
+#         required_fields = ["make", "model", "year", "client_id"]
+#         validation_error = validate_request_data(request.json, required_fields)
+#         if validation_error:
+#             return validation_error
+
+#         new_vehicle = Vehicle(**request.json)
+#         db.session.add(new_vehicle)
+#         db.session.commit()
+#         return make_response(jsonify(new_vehicle.to_dict()), 201)
+
+# @app.route("/vehicles/<int:id>", methods=["GET", "PATCH", "DELETE"])
+# def handle_vehicle_by_id(id):
+#     vehicle = db.session.get(Vehicle, id)
+#     if not vehicle:
+#         return make_response(jsonify({"error": "Vehicle not found"}), 404)
+
+#     if request.method == "GET":
+#         return make_response(jsonify(vehicle.to_dict()), 200)
+
+#     if request.method == "PATCH":
+#         for key, value in request.json.items():
+#             setattr(vehicle, key, value)
+#         db.session.commit()
+#         return make_response(jsonify(vehicle.to_dict()), 200)
+
+#     if request.method == "DELETE":
+#         db.session.delete(vehicle)
+#         db.session.commit()
+#         return make_response(jsonify({"message": "Vehicle deleted"}), 204)
 
 ### MECHANICS ROUTES ###
 @app.route("/mechanics", methods=["GET", "POST"])
