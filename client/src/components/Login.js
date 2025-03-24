@@ -42,6 +42,7 @@ const Login = () => {
           {error && <p className="error-message">{error}</p>}
 
           <form className="login-form" onSubmit={handleLogin}>
+          <label className="label-all">Email</label>
             <input
               type="email"
               name="email"
@@ -50,6 +51,7 @@ const Login = () => {
               onChange={handleChange}
               required
             />
+            <label className="label-all">Password</label>
             <input
               type="password"
               name="password"
