@@ -6,6 +6,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 import os
 
 # Local imports
@@ -140,19 +141,32 @@ def get_vehicle(id):
 @app.route('/vehicles', methods=['POST'])
 def add_vehicle():
     data = request.get_json()
-    if not all(key in data for key in ['number_plate', 'current_mileage', 'last_service_date']):
-        return jsonify({'error': 'Missing required fields'}), 400
 
-    new_vehicle = Vehicle(
-        number_plate=data['number_plate'],
-        current_mileage=data['current_mileage'],
-        last_service_date=data['last_service_date']
-    )
-    
-    db.session.add(new_vehicle)
-    db.session.commit()
-    
-    return jsonify({'message': 'Vehicle added successfully', 'vehicle': data}), 201
+    if not data:
+        return jsonify({'error': 'Request body must be JSON'}), 400
+
+    required_fields = ['client_id', 'make', 'model', 'year', 'number_plate', 'current_mileage', 'last_service_date']
+    if not all(field in data for field in required_fields):
+        return jsonify({'error': f'Missing required fields: {required_fields}'}), 400
+
+    try:
+        new_vehicle = Vehicle(
+            client_id=data['client_id'],
+            make=data['make'],
+            model=data['model'],  # ✅ Add model
+            year=data['year'],
+            number_plate=data['number_plate'],
+            current_mileage=data['current_mileage'],
+            last_service_date=datetime.strptime(data['last_service_date'], '%Y-%m-%d').date()
+        )
+
+        db.session.add(new_vehicle)
+        db.session.commit()
+        
+        return jsonify({'message': 'Vehicle added successfully', 'vehicle': data}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # **PATCH Route: Update a vehicle by ID**
 @app.route('/vehicles/<int:id>', methods=['PATCH'])
