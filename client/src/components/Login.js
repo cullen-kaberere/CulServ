@@ -26,7 +26,7 @@ const Login = () => {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("token", data.token); // Save token
-      navigate("/dashboard"); // Redirect after login
+      navigate("/car-details"); // Redirect after login
     } else {
       setError("Invalid email or password.");
     }
@@ -62,7 +62,7 @@ const Login = () => {
 
             {/* Signup Link */}
             <p className="signup-link">
-              Don't have an account? <a href="/register">Sign Up</a>
+              Don't have an account? <a href="/register-client">Sign Up</a>
             </p>
           </form>
         </div>
