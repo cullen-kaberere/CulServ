@@ -31,6 +31,9 @@ class Vehicle(db.Model, SerializerMixin):
     make = db.Column(db.String, nullable=False)
     model = db.Column(db.String, nullable=False)
     year = db.Column(db.Integer, nullable=False)
+    number_plate = db.Column(db.String, nullable=False, unique=True)
+    current_mileage = db.Column(db.Integer, nullable=False)
+    last_service_date = db.Column(db.Date, nullable=False)
 
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
     services = db.relationship('Service', backref='vehicle', cascade="all, delete-orphan")
