@@ -18,20 +18,29 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    const response = await fetch("http://localhost:5555/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(loginData),
-    });
+    try {
+        const response = await fetch('/login', {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(loginData),
+            credentials: 'include'
+        });
 
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem("token", data.token); // Save token
-      navigate("/car-details"); // Redirect after login
-    } else {
-      setError("Invalid email or password.");
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Login failed");
+        }
+
+        const data = await response.json();
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/car-details");
+    } catch (err) {
+        setError(err.message);
+        console.error("Login error:", err);
     }
-  };
+};
 
   return (
     <div className="login-container">

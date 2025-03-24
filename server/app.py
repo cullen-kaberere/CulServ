@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
 # Remote library imports
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response, jsonify, session
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from datetime import datetime
+from datetime import datetime, timedelta
+from flask_session import Session
 import os
 
 # Local imports
@@ -16,16 +17,49 @@ from models import Vehicle, Service, Mechanic, Client, Employee, db
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.json.compact = False
+# Configuration
+app.config.update(
+    SQLALCHEMY_DATABASE_URI='sqlite:///app.db',
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    JSON_COMPACT=False,
+    SECRET_KEY=os.environ.get('SECRET_KEY') or 'dev-key-change-me',
+    SESSION_TYPE="filesystem",
+    SESSION_COOKIE_NAME="vehicle_service_session",
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SECURE=False,  # True in production with HTTPS
+    SESSION_COOKIE_SAMESITE='Lax',
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=12),
+    SESSION_PERMANENT=True
+)
 
+# Initialize extensions
+Session(app)
 db.init_app(app)
-CORS(app)
+CORS(app, 
+    supports_credentials=True,
+    resources={r"/*": {"origins": "http://localhost:3000"}},
+    expose_headers=["Content-Type"],
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+)
 migrate = Migrate(app, db)
 
-# Utility function to validate required fields in request data
+@app.after_request
+def after_request(response):
+    """Ensure responses have proper CORS headers and cache control"""
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+    return response
+
+def get_logged_in_user():
+    """Retrieve the currently logged in user from session"""
+    user_id = session.get("user_id")
+    if user_id:
+        return Client.query.get(user_id)
+    return None
+
 def validate_request_data(data, required_fields):
+    """Validate that required fields are present in request data"""
     for field in required_fields:
         if field not in data:
             return make_response(jsonify({"error": f"Missing field: {field}"}), 400)
@@ -55,7 +89,10 @@ def signup():
     db.session.add(new_client)
     db.session.commit()
     
-    return jsonify({"message": "User registered successfully", "user": new_client.to_dict(rules=('-password',))}), 201
+    return jsonify({
+        "message": "User registered successfully", 
+        "user": new_client.to_dict(rules=('-password',))
+    }), 201
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -67,107 +104,97 @@ def login():
     if not user or not bcrypt.check_password_hash(user.password, password):
         return jsonify({"error": "Invalid email or password"}), 401
     
-    return jsonify({"message": "Login successful", "user": user.to_dict(rules=('-password',))}), 200
+    # Clear and set new session
+    session.clear()
+    session['user_id'] = user.id
+    session.permanent = True
+    session.modified = True
+    
+    return jsonify({
+        "message": "Login successful", 
+        "user": user.to_dict(rules=('-password',))
+    }), 200
 
-### CLIENTS ROUTES ###
-@app.route("/clients", methods=["GET", "POST"])
-def handle_clients():
-    if request.method == "GET":
-        clients = [client.to_dict() for client in Client.query.all()]
-        return make_response(jsonify(clients), 200)
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return jsonify({"message": "Logged out successfully"}), 200
 
-    if request.method == "POST":
-        required_fields = ["name", "email", "password"]
-        validation_error = validate_request_data(request.json, required_fields)
-        if validation_error:
-            return validation_error
-
-        new_client = Client(**request.json)
-        db.session.add(new_client)
-        db.session.commit()
-        return make_response(jsonify(new_client.to_dict()), 201)
-
-@app.route("/clients/<int:id>", methods=["GET", "PATCH", "DELETE"])
-def handle_client_by_id(id):
-    client = db.session.get(Client, id)
-    if not client:
-        return make_response(jsonify({"error": "Client not found"}), 404)
-
-    if request.method == "GET":
-        return make_response(jsonify(client.to_dict()), 200)
-
-    if request.method == "PATCH":
-        for key, value in request.json.items():
-            setattr(client, key, value)
-        db.session.commit()
-        return make_response(jsonify(client.to_dict()), 200)
-
-    if request.method == "DELETE":
-        db.session.delete(client)
-        db.session.commit()
-        return make_response(jsonify({"message": "Client deleted"}), 204)
-
-# **GET Route: Retrieve all vehicles**
+# Vehicle routes
 @app.route('/vehicles', methods=['GET'])
 def get_vehicles():
-    vehicles = Vehicle.query.all()
-    vehicle_list = [
-        {
-            'id': vehicle.id,
-            'number_plate': vehicle.number_plate,
-            'current_mileage': vehicle.current_mileage,
-            'last_service_date': vehicle.last_service_date.strftime('%Y-%m-%d')
-        }
-        for vehicle in vehicles
-    ]
-    return jsonify(vehicle_list), 200
+    user = get_logged_in_user()
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
 
-# **GET Route: Retrieve a specific vehicle by ID**
+    vehicles = Vehicle.query.filter_by(client_id=user.id).all()
+    return jsonify([{
+        'id': v.id,
+        'make': v.make,
+        'model': v.model,
+        'year': v.year,
+        'number_plate': v.number_plate,
+        'current_mileage': v.current_mileage,
+        'last_service_date': v.last_service_date.strftime('%Y-%m-%d') if v.last_service_date else None
+    } for v in vehicles]), 200
+
 @app.route('/vehicles/<int:id>', methods=['GET'])
 def get_vehicle(id):
-    vehicle = Vehicle.query.get(id)
+    user = get_logged_in_user()
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    vehicle = Vehicle.query.filter_by(id=id, client_id=user.id).first()
     if not vehicle:
         return jsonify({'error': 'Vehicle not found'}), 404
 
-    vehicle_data = {
+    return jsonify({
         'id': vehicle.id,
+        'make': vehicle.make,
+        'model': vehicle.model,
+        'year': vehicle.year,
         'number_plate': vehicle.number_plate,
         'current_mileage': vehicle.current_mileage,
-        'last_service_date': vehicle.last_service_date.strftime('%Y-%m-%d')
-    }
-    return jsonify(vehicle_data), 200
+        'last_service_date': vehicle.last_service_date.strftime('%Y-%m-%d') if vehicle.last_service_date else None
+    }), 200
 
-# **POST Route: Add a new vehicle**
 @app.route('/vehicles', methods=['POST'])
 def add_vehicle():
-    data = request.get_json()
+    user = get_logged_in_user()
+    if not user:
+        return jsonify({'error': 'Unauthorized'}), 401
 
+    data = request.get_json()
     if not data:
         return jsonify({'error': 'Request body must be JSON'}), 400
 
-    required_fields = ['client_id', 'make', 'model', 'year', 'number_plate', 'current_mileage', 'last_service_date']
+    required_fields = ['make', 'model', 'year', 'number_plate', 'current_mileage', 'last_service_date']
     if not all(field in data for field in required_fields):
         return jsonify({'error': f'Missing required fields: {required_fields}'}), 400
 
     try:
         new_vehicle = Vehicle(
-            client_id=data['client_id'],
+            client_id=user.id,
             make=data['make'],
-            model=data['model'],  # ✅ Add model
+            model=data['model'],
             year=data['year'],
             number_plate=data['number_plate'],
             current_mileage=data['current_mileage'],
             last_service_date=datetime.strptime(data['last_service_date'], '%Y-%m-%d').date()
         )
-
         db.session.add(new_vehicle)
         db.session.commit()
         
-        return jsonify({'message': 'Vehicle added successfully', 'vehicle': data}), 201
-
+        return jsonify({
+            'message': 'Vehicle added successfully',
+            'vehicle': {
+                'id': new_vehicle.id,
+                **{k: v for k, v in data.items() if k in required_fields}
+            }
+        }), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
+    
 # **PATCH Route: Update a vehicle by ID**
 @app.route('/vehicles/<int:id>', methods=['PATCH'])
 def update_vehicle(id):

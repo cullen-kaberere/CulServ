@@ -15,6 +15,7 @@ flask-migrate = "*"
 flask-sqlalchemy = "*"
 flask-bcrypt = "*"
 psycopg2-binary = "*"
+flask-session = "*"
 
 [requires]
 python_full_version = "3.8.13"
