@@ -1,114 +1,231 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-image: url('../images/client1.jpg'); /* Add your background image */
-    background-size: cover; /* Ensure the background covers the entire screen */
-    background-position: center;
-    background-attachment: fixed; /* Keeps the background static during scrolling */
-    color: orange;
-    font-family: Arial, sans-serif;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-.register-client-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+.register-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: #ffffff;
 }
 
-h2 {
-    font-size: 24px;
-    font-weight: bold;
-    text-shadow: 0 0 10px black; /* Adds a glowing effect for readability */
+/* Sidebar Styles */
+.sidebar {
+  width: 660px;
+  background-color: #f47b20;
+  color: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+.signup-f{
+  color: white;
+  background-color: whitesmoke;
 }
 
-.form-class {
-    background-color: rgba(0, 0, 0, 0.527); /* Translucent background */
-    border: 2px solid orange;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 550px;
-    box-shadow: 0px 0px 10px orange;
+.logo-section {
+  margin-bottom: 60px;
+}
+
+.car-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 15px;
+}
+
+.sidebar h1 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.sidebar p {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.circle-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.feature-text h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.feature-text p {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Form Styles */
+.form-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  width: 360px;
+  text-align: center;
+}
+
+.form-cardi {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  width: 100%;
+  max-width: 550px;
+}
+
+.form-card h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  margin-bottom: 24px;
 }
 
 label {
-    display: block;
-    margin: 10px 0 5px;
-    font-size: 16px;
-    text-shadow: 0 0 5px black; /* Adds a glow to the text */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
 }
 
-input {
-    width: 100%;
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 10px;
+.person-icon,
+.email-icon {
+  font-size: 16px;
 }
 
-button {
-    background-color: orange;
-    color: black;
-    font-weight: bold;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    width: 100%;
-    cursor: pointer;
-    margin-top: 10px;
+input,
+select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #333;
 }
 
-button:hover {
-    background-color: darkorange;
+input::placeholder {
+  color: #ffffff;
 }
 
-.existing-client {
-    margin-top: 20px;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5); /* Translucent section for the dropdown */
-    padding: 10px;
-    border-radius: 5px;
+.select-wrapper {
+  position: relative;
 }
 
 select {
+  appearance: none;
+  padding-right: 40px;
+  background-color: white;
+}
+
+.select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #666;
+  pointer-events: none;
+}
+
+.button-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.register-btn {
+  flex: 1;
+  background-color: #f47b20;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-icon {
+  margin-left: 8px;
+}
+
+.cancel-btn {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .register-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
     width: 100%;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
+    padding: 30px 20px;
+  }
 
-.navbar {
-    position: absolute;
-    top: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-    font-size: 18px;
-}
+  .form-wrapper {
+    padding: 20px;
+  }
 
-.navbar a {
-    color: orange;
-    text-decoration: none;
-    font-weight: bold;
-}
+  .form-card {
+    padding: 30px 20px;
+  }
 
-.navbar a:hover {
-    text-decoration: underline;
+  .button-container {
+    flex-direction: column;
+  }
 }
-
-.link-text {
-    color: orange;
-    margin-top: 10px;
-}
-
-.link-text a {
-    color: white;
-    text-decoration: none;
-}
-
-.link-text a:hover {
-    text-decoration: underline;
+.login-link{
+  color: #000000;
+  font-size: medium;
 }
