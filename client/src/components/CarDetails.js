@@ -140,12 +140,7 @@ const CarDetails = () => {
     return (
         <div className="car-details-container">
             <div className="header-section">
-                <button 
-                    className="add-vehicle-button"
-                    onClick={() => setShowModal(true)}
-                >
-                    Add Vehicle
-                </button>
+                <button className="add-vehicle-button"onClick={() => setShowModal(true)} > Add Vehicle</button>
             </div>
             
             <div className="search-filter-container">
@@ -184,16 +179,21 @@ const CarDetails = () => {
                     <div key={vehicle.id} className="vehicle-card">
                         <div className="vehicle-header">
                             <h3>{vehicle.make} {vehicle.model} ({vehicle.year})</h3>
-                            <span className="Number">{vehicle.number_plate}</span>
+                            
                         </div>
                         
                         <div className="vehicle-details">
                             <div className="detail-column">
+                                <p><strong>Number Plate:</strong> <span  className="Number">{vehicle.number_plate}</span></p>
                                 <p><strong>Last Service:</strong> {vehicle.last_service_date || 'N/A'}</p>
                                 {vehicle.mileage && <p><strong>Mileage:</strong> {vehicle.mileage.toLocaleString()} miles</p>}
                             </div>
                             <div className="detail-column">
                                 <p><strong>Next Due:</strong> {vehicle.next_service_date || 'N/A'}</p>
+                            </div>
+                            <div className="action-buttons">
+                                {/* <button>History</button> */}
+                                <button onClick={() => navigate("/service-management")}>Service</button>
                             </div>
                         </div>
                         
@@ -201,11 +201,11 @@ const CarDetails = () => {
                             <button className={`status-tag ${getStatusLabel(vehicle).toLowerCase().replace(' ', '-')}`}>
                                 {getStatusLabel(vehicle)}
                             </button>
-                            <div className="action-buttons">
+                            {/* <div className="action-buttons">
                                 <button>History</button>
                                 <button>Service</button>
-                            </div>
-                        </div>
+                            </div> */}
+                        </div> 
                     </div>
                 ))}
             </div>

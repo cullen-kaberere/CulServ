@@ -1,152 +1,123 @@
-/* Modal Styles */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
+/* CarDetails.css */
 
-.add-vehicle-button{
-    width: 4cm;
-    margin-right: 2cm;
-
-}
-
-.modal-content {
-    background-color: white;
-    padding: 25px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.cancel-button {
-    background-color: #f0f0f0;
-    color: #333;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.submit-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.submit-button:hover {
-    background-color: #0056b3;
-}
+/* Main Container */
 .car-details-container {
-    padding: 20px;
+    font-family: 'Arial', sans-serif;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 20px;
+    color: #333;
+    background-color: #f5f5f5;
 }
 
-.search-filter-container {
+/* Header Section */
+.header-section {
+    display: flex;
+    justify-content: flex-end; /* Changed from space-between to push button to right */
     margin-bottom: 20px;
+    width: 100%;
+}
+
+.add-vehicle-button {
+    background-color: #f47b20;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    width: auto; /* Changed from fixed width */
+    /* Removed float: right as flex handles this */
+}
+
+.add-vehicle-button:hover {
+    background-color: #d96b1a;
+}
+
+/* Search and Filter Section */
+.search-filter-container {
+    margin-bottom: 30px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .search-input {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 12px 15px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
 }
 
 .filter-tabs {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 15px;
+    margin-bottom: 0; /* Reduced space */
 }
 
 .filter-tabs button {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
+    padding: 8px 15px;
+    border: none;
+    background-color: transparent;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 2px solid transparent;
 }
 
 .filter-tabs button.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+    color: #f47b20;
+    border-bottom: 2px solid #f47b20;
+    font-weight: bold;
 }
 
+/* Vehicle List */
 .vehicle-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 15px;
 }
 
 .vehicle-card {
-    border: 1px solid #ddd;
+    background-color: white;
     border-radius: 8px;
-    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 20px;
+    border-left: 4px solid #f47b20;
 }
 
 .vehicle-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
 .vehicle-header h3 {
     margin: 0;
+    font-size: 18px;
+    color: #000000;
+    font-weight: 600;
 }
 
-.license {
-    color: #666;
+.vehicle-header .Number {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #000000;
 }
 
 .vehicle-details {
     display: flex;
-    gap: 20px;
+    gap: 30px;
     margin-bottom: 15px;
 }
 
@@ -154,28 +125,76 @@
     flex: 1;
 }
 
+.detail-column p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.detail-column p strong {
+    color: #333;
+}
+
 .vehicle-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
 }
 
 .status-tag {
     padding: 5px 10px;
     border-radius: 4px;
-    background: #eee;
-    border: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.status-tag.good-condition {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-tag.service-due {
+    background-color: #fff8e1;
+    color: #ff8f00;
+}
+
+.status-tag.needs-attention {
+    background-color: #ffebee;
+    color: #c62828;
 }
 
 .action-buttons {
     display: flex;
     gap: 10px;
+    height: 1cm;
 }
 
 .action-buttons button {
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    background: white;
+    padding: 6px 12px;
+    background-color: #f47b20;
+    border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.action-buttons button:hover {
+    background-color: #b15006;
+}
+
+/* Modal Styles - Keep your existing modal styles */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .vehicle-details {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-tabs {
+        flex-wrap: wrap;
+    }
 }
