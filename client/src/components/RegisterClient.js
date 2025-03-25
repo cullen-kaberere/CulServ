@@ -135,9 +135,9 @@ const RegisterClient = () => {
               onChange={handleChange}
               required
             />
-            <p className="login-link">Already have an account? <a href="/login">Login</a></p>
+            <p className="login-links">Already have an account? <a href="/login">Login</a></p>
 
-            <button type="submit">Register</button>
+            <button className="register-btn" type="submit">Register</button>
           </form>
         </div>
       </div>

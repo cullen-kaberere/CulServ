@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  margin: 0;
+  margin-top: 1.62cm;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
@@ -14,6 +14,7 @@
 
 /* Sidebar Styles */
 .sidebar {
+  margin-top: 1.62cm;
   width: 660px;
   background-color: #f47b20;
   color: white;
@@ -24,6 +25,7 @@
 .signup-f{
   color: white;
   background-color: whitesmoke;
+  background: white;
 }
 
 .logo-section {
@@ -85,6 +87,7 @@
   padding: 40px;
   width: 360px;
   text-align: center;
+  background-color: white;
 }
 
 .form-cardi {
@@ -225,7 +228,15 @@ select {
     flex-direction: column;
   }
 }
-.login-link{
+.login-links{
   color: #000000;
   font-size: medium;
+  margin-top: 30px;
+}
+
+.register-btn{
+  border-radius: 4px;
+  display: flex;
+  gap: 16px;
+  margin-top: 30px;
 }
