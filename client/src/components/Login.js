@@ -8,7 +8,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
+  // const [rememberMe, setRememberMe] = useState(false);
 
   const handleChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -70,9 +70,9 @@ const Login = () => {
               onChange={handleChange}
               required
             />
-            <button type="submit">Login</button>
+            <button className="login-btn" type="submit">Login</button>
 
-            <div className="checkbox-container">
+            {/* <div className="checkbox-container">
               <input
                 type="checkbox"
                 id="rememberMe"
@@ -80,7 +80,7 @@ const Login = () => {
                 onChange={() => setRememberMe(!rememberMe)}
               />
               <label htmlFor="rememberMe">Remember me for 30 days</label>
-            </div>
+            </div> */}
 
 
             {/* Signup Link */}
