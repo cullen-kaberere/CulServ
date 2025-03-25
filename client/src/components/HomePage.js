@@ -17,7 +17,7 @@ function Homepage() {
               Our platform helps you effectively manage service needs,  
               optimize maintenance, and reduce downtime.
             </p>
-            <button onClick={() => navigate("/register-client")}>Get Started</button> {/* ✅ Fixed */}
+            <button className="btn-ready" onClick={() => navigate("/register-client")}>Get Started</button> {/* ✅ Fixed */}
           </div>
         </div>
       </section>
