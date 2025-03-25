@@ -11,6 +11,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: #f97316; /* Orange color */
+  margin-left: 1.5cm;
 }
 
 .navbar-links {
@@ -44,6 +45,8 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  margin-right: 2cm;
+  font-weight: 600;
 }
 
 .login-link {
@@ -93,6 +96,10 @@
   gap: 8px;
   font-size: 1rem;
   color: black;
+}
+.user-menu:hover {
+  color: #f97316;
+  transition: color 0.3s ease-in-out;
 }
 
 .dropdown-menu {
