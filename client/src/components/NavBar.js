@@ -16,7 +16,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className="navbari">
       <div className="navbar-brandi">CulServ</div>
       <div className="navbar-auth">
         {user ? (

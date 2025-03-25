@@ -1,10 +1,15 @@
-.navbar {
+.navbari {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background: white;
+  background: #F8F9FA;
   border-bottom: 1px solid #ddd;
+  position: fixed; /* Fix the navbar at the top */
+  top: 0; 
+  left: 0; /* Ensure it starts from the left */
+  width: 100%; /* Full width */
+  z-index: 1000; /* Ensure it stays on top */
 }
 
 .navbar-brandi {
