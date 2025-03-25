@@ -17,7 +17,7 @@ const ServiceManagement = () => {
       id: 1,
       name: "Basic Maintenance",
       description: "Oil change, filter replacement, fluid check, and basic inspection",
-      price: 89.99,
+      price: 7999,
       estimatedTime: "1-2 hours",
       icon: "oil-change.png",
       includes: [
@@ -32,7 +32,7 @@ const ServiceManagement = () => {
       id: 2,
       name: "Full Service",
       description: "Comprehensive vehicle maintenance including all fluids, filters, and detailed inspection",
-      price: 199.99,
+      price: 11999,
       estimatedTime: "3-4 hours",
       icon: "full-service.png",
       includes: [
@@ -50,7 +50,7 @@ const ServiceManagement = () => {
       id: 3,
       name: "Brake Service",
       description: "Complete brake system inspection, pad replacement, and rotor resurfacing if needed",
-      price: 149.99,
+      price: 4900,
       estimatedTime: "2-3 hours",
       icon: "brake-service.png",
       includes: [
@@ -232,7 +232,7 @@ const ServiceManagement = () => {
 
               <div className="service-header">
                 <h3>{service.name}</h3>
-                <div className="service-price">${service.price.toFixed(2)}</div>
+                <div className="service-price">Ksh{service.price.toFixed(2)}</div>
               </div>
 
               <p className="service-description">{service.description}</p>
@@ -290,7 +290,7 @@ const ServiceManagement = () => {
                         <span className="service-name">{service.name}</span>
                         <span className="service-time">{service.estimatedTime}</span>
                       </div>
-                      <span className="service-price">${service.price.toFixed(2)}</span>
+                      <span className="service-price">Ksh{service.price.toFixed(2)}</span>
                     </div>
                   )
                 })}
@@ -298,7 +298,7 @@ const ServiceManagement = () => {
 
               <div className="total-price">
                 <span>Total:</span>
-                <span className="price">${totalPrice.toFixed(2)}</span>
+                <span className="price">Ksh{totalPrice.toFixed(2)}</span>
               </div>
 
               <div className="summary-actions">
