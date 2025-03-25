@@ -52,6 +52,22 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  position: relative;
+}
+
+.login-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px; /* Adjusts the line position */
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #f97316; /* Orange color */
+  transition: width 0.3s ease-in-out;
+}
+
+.login-link:hover::after {
+  width: 100%; /* Expands the underline on hover */
 }
 
 .signup-button {
@@ -64,6 +80,11 @@
   border-radius: 5px;
   text-decoration: none;
 }
+.signup-button:hover {
+  background: #b34c02; /* Darker shade of orange */
+  transition: background 0.3s ease-in-out;
+}
+
 .user-menu {
   position: relative;
   cursor: pointer;
