@@ -128,11 +128,11 @@ const CarDetails = () => {
         return 0;
     };
 
-    const getStatusLabel = (vehicle) => {
-        if (vehicle.serviceDue) return 'Service Due';
-        if (vehicle.needsAttention) return 'Needs Attention';
-        return 'Good Condition';
-    };
+    // const getStatusLabel = (vehicle) => {
+    //     if (vehicle.serviceDue) return 'Service Due';
+    //     if (vehicle.needsAttention) return 'Needs Attention';
+    //     return 'Good Condition';
+    // };
 
     if (loading) return <div className="car-details-container">Loading...</div>;
     if (error) return <div className="car-details-container">Error: {error}</div>;
@@ -188,24 +188,16 @@ const CarDetails = () => {
                                 <p><strong>Last Service:</strong> {vehicle.last_service_date || 'N/A'}</p>
                                 {vehicle.mileage && <p><strong>Mileage:</strong> {vehicle.mileage.toLocaleString()} miles</p>}
                             </div>
-                            <div className="detail-column">
+                            {/*<div className="detail-column">
                                 <p><strong>Next Due:</strong> {vehicle.next_service_date || 'N/A'}</p>
-                            </div>
+                            </div>*/}
                             <div className="action-buttons">
                                 {/* <button>History</button> */}
                                 <button onClick={() => navigate("/service-management")}>Service</button>
                             </div>
                         </div>
                         
-                        <div className="vehicle-actions">
-                            <button className={`status-tag ${getStatusLabel(vehicle).toLowerCase().replace(' ', '-')}`}>
-                                {getStatusLabel(vehicle)}
-                            </button>
-                            {/* <div className="action-buttons">
-                                <button>History</button>
-                                <button>Service</button>
-                            </div> */}
-                        </div> 
+                        
                     </div>
                 ))}
             </div>

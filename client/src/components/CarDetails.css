@@ -90,7 +90,8 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     padding: 20px;
-    border-left: 4px solid #f47b20;
+    border-left: 10px solid #f47b20;
+    gap: 150px;
 }
 
 .vehicle-header {
@@ -119,7 +120,7 @@
 
 .vehicle-details {
     display: flex;
-    gap: 30px;
+    gap: 60px;
     margin-bottom: 15px;
 }
 
