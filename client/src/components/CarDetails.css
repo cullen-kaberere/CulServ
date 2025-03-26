@@ -201,3 +201,7 @@
         flex-wrap: wrap;
     }
 }
+
+.modal-actions{
+    gap: 2px;
+}
