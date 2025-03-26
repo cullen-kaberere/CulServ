@@ -10,6 +10,7 @@
     grid-template-columns: 1fr 350px;
     gap: 30px;
     min-height: 100vh;
+    margin-top: 1.62cm;
   }
   
   /* Loading Styles */
