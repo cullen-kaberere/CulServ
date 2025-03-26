@@ -223,7 +223,7 @@ const Checkout = () => {
                       <div className="service-details">
                         <span className="service-name">{service.name}</span>
                       </div>
-                      <span className="service-price">${service.price.toFixed(2)}</span>
+                      <span className="service-price">Ksh{service.price.toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -231,7 +231,7 @@ const Checkout = () => {
                 <div className="total-section">
                   <div className="subtotal">
                     <span>Subtotal</span>
-                    <span>${serviceRequest?.total_price?.toFixed(2) || "0.00"}</span>
+                    <span>Ksh{serviceRequest?.total_price?.toFixed(2) || "0.00"}</span>
                   </div>
                   <div className="tax">
                     <span>Tax</span>
@@ -239,7 +239,7 @@ const Checkout = () => {
                   </div>
                   <div className="total">
                     <span>Total</span>
-                    <span>${serviceRequest?.total_price?.toFixed(2) || "0.00"}</span>
+                    <span>Ksh{serviceRequest?.total_price?.toFixed(2) || "0.00"}</span>
                   </div>
                 </div>
               </div>
@@ -499,21 +499,21 @@ const Checkout = () => {
               {serviceRequest?.services?.map((service, index) => (
                 <div key={index} className="service-mini-item">
                   <span>{service.name}</span>
-                  <span>${service.price.toFixed(2)}</span>
+                  <span>Ksh{service.price.toFixed(2)}</span>
                 </div>
               ))}
             </div>
 
             <div className="total-mini">
               <span>Total</span>
-              <span>${serviceRequest?.total_price?.toFixed(2) || "0.00"}</span>
+              <span>Ksh{serviceRequest?.total_price?.toFixed(2) || "0.00"}</span>
             </div>
           </div>
 
           <div className="support-info">
             <h3>Need Help?</h3>
             <p>Contact our support team:</p>
-            <p>📞 (123) 456-7890</p>
+            <p>📞 254 703-201-556</p>
             <p>✉️ support@culserv.com</p>
           </div>
         </div>
