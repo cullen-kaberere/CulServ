@@ -15,7 +15,7 @@ const CarDetails = () => {
         model: '',
         year: '',
         number_plate: '',
-        current_mileage: '',
+        // current_mileage: '',
         last_service_date: ''
     });
 
@@ -62,7 +62,7 @@ const CarDetails = () => {
             setError('User not logged in');
             return;
         }
-
+    
         try {
             const response = await fetch('/vehicles', {
                 method: 'POST',
@@ -75,7 +75,7 @@ const CarDetails = () => {
                     model: newVehicle.model,
                     year: newVehicle.year,
                     number_plate: newVehicle.number_plate,
-                    current_mileage: newVehicle.current_mileage,
+                    // current_mileage: newVehicle.current_mileage ? parseInt(newVehicle.current_mileage, 10) : null,
                     last_service_date: newVehicle.last_service_date
                 }),
                 credentials: 'include'
@@ -95,7 +95,7 @@ const CarDetails = () => {
                 model: '',
                 year: '',
                 number_plate: '',
-                current_mileage: '',
+                // current_mileage: '',
                 last_service_date: ''
             });
         } catch (err) {

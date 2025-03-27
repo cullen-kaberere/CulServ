@@ -134,7 +134,7 @@ def get_vehicles():
         'model': v.model,
         'year': v.year,
         'number_plate': v.number_plate,
-        'current_mileage': v.current_mileage,
+        # 'current_mileage': v.current_mileage,
         'last_service_date': v.last_service_date.strftime('%Y-%m-%d') if v.last_service_date else None
     } for v in vehicles]), 200
 
@@ -154,7 +154,7 @@ def get_vehicle(id):
         'model': vehicle.model,
         'year': vehicle.year,
         'number_plate': vehicle.number_plate,
-        'current_mileage': vehicle.current_mileage,
+        # 'current_mileage': vehicle.current_mileage,
         'last_service_date': vehicle.last_service_date.strftime('%Y-%m-%d') if vehicle.last_service_date else None
     }), 200
 
@@ -175,7 +175,7 @@ def add_vehicle():
         return jsonify({'error': f'Missing required fields: {missing_fields}'}), 400
 
     # Assign default mileage if None
-    current_mileage = data.get('current_mileage', 0)  # Default to 0
+    # current_mileage = data.get('current_mileage', 0)  # Default to 0
 
     try:
         new_vehicle = Vehicle(
@@ -184,7 +184,7 @@ def add_vehicle():
             model=data['model'],
             year=data['year'],
             number_plate=data['number_plate'],
-            current_mileage=current_mileage,
+            # current_mileage=current_mileage,
             last_service_date=datetime.strptime(data['last_service_date'], '%Y-%m-%d').date()
         )
         db.session.add(new_vehicle)
@@ -210,8 +210,8 @@ def update_vehicle(id):
     data = request.get_json()
     if 'number_plate' in data:
         vehicle.number_plate = data['number_plate']
-    if 'current_mileage' in data:
-        vehicle.current_mileage = data['current_mileage']
+    # if 'current_mileage' in data:
+    #     vehicle.current_mileage = data['current_mileage']
     if 'last_service_date' in data:
         vehicle.last_service_date = data['last_service_date']
 
