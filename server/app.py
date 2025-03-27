@@ -37,7 +37,7 @@ Session(app)
 db.init_app(app)
 CORS(app, 
     supports_credentials=True,
-    resources={r"/*": {"origins": "http://localhost:3000"}},
+    resources={r"/*": {"origins": "https://cul-serv-cullen-kabereres-projects.vercel.app/"}},
     expose_headers=["Content-Type"],
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
