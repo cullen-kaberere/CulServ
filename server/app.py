@@ -168,9 +168,14 @@ def add_vehicle():
     if not data:
         return jsonify({'error': 'Request body must be JSON'}), 400
 
-    required_fields = ['make', 'model', 'year', 'number_plate', 'current_mileage', 'last_service_date']
-    if not all(field in data for field in required_fields):
-        return jsonify({'error': f'Missing required fields: {required_fields}'}), 400
+    required_fields = ['make', 'model', 'year', 'number_plate', 'last_service_date']
+    missing_fields = [field for field in required_fields if field not in data]
+
+    if missing_fields:
+        return jsonify({'error': f'Missing required fields: {missing_fields}'}), 400
+
+    # Assign default mileage if None
+    current_mileage = data.get('current_mileage', 0)  # Default to 0
 
     try:
         new_vehicle = Vehicle(
@@ -179,7 +184,7 @@ def add_vehicle():
             model=data['model'],
             year=data['year'],
             number_plate=data['number_plate'],
-            current_mileage=data['current_mileage'],
+            current_mileage=current_mileage,
             last_service_date=datetime.strptime(data['last_service_date'], '%Y-%m-%d').date()
         )
         db.session.add(new_vehicle)
