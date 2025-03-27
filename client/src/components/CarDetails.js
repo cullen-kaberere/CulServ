@@ -256,7 +256,7 @@ const CarDetails = () => {
                                 />
                             </div>
                             
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label>Current Mileage</label>
                                 <input
                                     type="number"
@@ -265,7 +265,7 @@ const CarDetails = () => {
                                     onChange={handleInputChange}
                                     placeholder="e.g. 25000"
                                 />
-                            </div>
+                            </div> */}
                             
                             <div className="form-group">
                                 <label>Last Service Date</label>
