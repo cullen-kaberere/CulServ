@@ -8,6 +8,8 @@ const Login = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
+
   // const [rememberMe, setRememberMe] = useState(false);
 
   const handleChange = (e) => {
@@ -17,6 +19,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true); // Start loading
 
     try {
         const response = await fetch('/login', {
@@ -39,6 +42,8 @@ const Login = () => {
     } catch (err) {
         setError(err.message);
         console.error("Login error:", err);
+    }finally {
+      setLoading(false); // Stop loading
     }
 };
 
@@ -70,7 +75,7 @@ const Login = () => {
               onChange={handleChange}
               required
             />
-            <button className="login-btn" type="submit">Login</button>
+            <button className="login-btn" type="submit" disabled={loading}>{loading ? "Loading..." : "Login"}</button>
 
             {/* <div className="checkbox-container">
               <input
