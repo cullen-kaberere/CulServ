@@ -19,33 +19,33 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true); // Start loading
-
+    setLoading(true);
+  
     try {
-        const response = await fetch('/login', {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(loginData),
-            credentials: 'include'
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Login failed");
-        }
-
-        const data = await response.json();
-        localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/car-details");
+      const response = await fetch('https://culserv.onrender.com/login', {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+        credentials: 'include' // Important for cookies/sessions
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Login failed");
+      }
+  
+      const data = await response.json();
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/car-details");
     } catch (err) {
-        setError(err.message);
-        console.error("Login error:", err);
-    }finally {
-      setLoading(false); // Stop loading
+      setError(err.message || "Invalid email or password");
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
     }
-};
+  };
 
   return (
     <div className="login-container">
