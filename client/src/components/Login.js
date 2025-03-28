@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
@@ -8,9 +7,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Loading state
-
-  // const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
@@ -20,7 +17,7 @@ const Login = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
-  
+
     try {
       const response = await fetch('https://culserv.onrender.com/login', {
         method: "POST",
@@ -28,19 +25,28 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(loginData),
-        credentials: 'include' // Important for cookies/sessions
+        credentials: 'include', // Crucial for session cookies
+        mode: 'cors' // Explicit CORS mode
       });
-  
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Login failed");
+        // Handle specific HTTP errors
+        if (response.status === 401) {
+          throw new Error("Invalid email or password");
+        }
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Login failed. Please try again.");
       }
-  
+
       const data = await response.json();
+      
+      // Store user data in localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
+      
+      // Redirect to dashboard
       navigate("/car-details");
     } catch (err) {
-      setError(err.message || "Invalid email or password");
+      setError(err.message || "An unexpected error occurred");
       console.error("Login error:", err);
     } finally {
       setLoading(false);
@@ -54,41 +60,40 @@ const Login = () => {
           <h2>Login</h2>
           <p className="subtitle">Sign in to manage your vehicles and services</p>
 
-          {error && <p className="error-message">{error}</p>}
+          {error && <div className="error-message">{error}</div>}
 
           <form className="login-form" onSubmit={handleLogin}>
-          <label className="label-all">Email</label>
+            <label className="label-all">Email</label>
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Enter your email"
               value={loginData.email}
               onChange={handleChange}
               required
+              autoComplete="username"
             />
+            
             <label className="label-all">Password</label>
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="Enter your password"
               value={loginData.password}
               onChange={handleChange}
               required
+              autoComplete="current-password"
             />
-            <button className="login-btn" type="submit" disabled={loading}>{loading ? "Loading..." : "Login"}</button>
+            
+            <button 
+              className="login-btn" 
+              type="submit" 
+              disabled={loading}
+              aria-busy={loading}
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
 
-            {/* <div className="checkbox-container">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
-              />
-              <label htmlFor="rememberMe">Remember me for 30 days</label>
-            </div> */}
-
-
-            {/* Signup Link */}
             <p className="signup-link">
               Don't have an account? <a href="/register-client">Sign Up</a>
             </p>
