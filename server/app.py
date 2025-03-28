@@ -6,7 +6,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from flask_session import Session
 import os
 
@@ -26,31 +26,32 @@ app.config.update(
     SESSION_TYPE="filesystem",
     SESSION_COOKIE_NAME="vehicle_service_session",
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SECURE=False,  # True in production with HTTPS
-    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE='None',
     PERMANENT_SESSION_LIFETIME=timedelta(hours=12),
-    SESSION_PERMANENT=True
+    SESSION_PERMANENT=True,
+    SESSION_COOKIE_DOMAIN='culserv.onrender.com'
 )
 
 # Initialize extensions
 Session(app)
 db.init_app(app)
-CORS(app, 
-    supports_credentials=True,
-    resources={r"/*": {"origins": "https://cul-serv.vercel.app"}},
-    expose_headers=["Content-Type"],
-    allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+
+# CORS Configuration
+cors = CORS(app, 
+    resources={
+        r"/*": {
+            "origins": "https://cul-serv.vercel.app",
+            "supports_credentials": True,
+            "allow_headers": ["Content-Type", "Authorization"],
+            "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+        }
+    }
 )
+
 migrate = Migrate(app, db)
 
-@app.after_request
-def after_request(response):
-    """Ensure responses have proper CORS headers and cache control"""
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    response.headers.add('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
-    return response
-
+# Helper Functions
 def get_logged_in_user():
     """Retrieve the currently logged in user from session"""
     user_id = session.get("user_id")
@@ -65,11 +66,29 @@ def validate_request_data(data, required_fields):
             return make_response(jsonify({"error": f"Missing field: {field}"}), 400)
     return None
 
+@app.after_request
+def after_request(response):
+    """Ensure responses have proper headers"""
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0'
+    return response
+
+# OPTIONS Handler
+@app.route('/login', methods=['OPTIONS'])
+def login_options():
+    response = make_response()
+    response.headers['Access-Control-Allow-Origin'] = 'https://cul-serv.vercel.app'
+    response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Vary'] = 'Origin'
+    return response
+
 # Routes
 @app.route('/')
 def index():
     return '<h1>Vehicle Service Management</h1>'
 
+# Authentication Routes
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
@@ -89,10 +108,13 @@ def signup():
     db.session.add(new_client)
     db.session.commit()
     
-    return jsonify({
+    response = jsonify({
         "message": "User registered successfully", 
         "user": new_client.to_dict(rules=('-password',))
-    }), 201
+    })
+    response.headers['Access-Control-Allow-Origin'] = 'https://cul-serv.vercel.app'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response, 201
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -110,15 +132,21 @@ def login():
     session.permanent = True
     session.modified = True
     
-    return jsonify({
+    response = jsonify({
         "message": "Login successful", 
         "user": user.to_dict(rules=('-password',))
-    }), 200
+    })
+    response.headers['Access-Control-Allow-Origin'] = 'https://cul-serv.vercel.app'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response, 200
 
 @app.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return jsonify({"message": "Logged out successfully"}), 200
+    response = jsonify({"message": "Logged out successfully"})
+    response.headers['Access-Control-Allow-Origin'] = 'https://cul-serv.vercel.app'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response, 200
 
 # Vehicle routes
 @app.route('/vehicles', methods=['GET'])
@@ -134,7 +162,6 @@ def get_vehicles():
         'model': v.model,
         'year': v.year,
         'number_plate': v.number_plate,
-        # 'current_mileage': v.current_mileage,
         'last_service_date': v.last_service_date.strftime('%Y-%m-%d') if v.last_service_date else None
     } for v in vehicles]), 200
 
@@ -154,7 +181,6 @@ def get_vehicle(id):
         'model': vehicle.model,
         'year': vehicle.year,
         'number_plate': vehicle.number_plate,
-        # 'current_mileage': vehicle.current_mileage,
         'last_service_date': vehicle.last_service_date.strftime('%Y-%m-%d') if vehicle.last_service_date else None
     }), 200
 
@@ -174,9 +200,6 @@ def add_vehicle():
     if missing_fields:
         return jsonify({'error': f'Missing required fields: {missing_fields}'}), 400
 
-    # Assign default mileage if None
-    # current_mileage = data.get('current_mileage', 0)  # Default to 0
-
     try:
         new_vehicle = Vehicle(
             client_id=user.id,
@@ -184,7 +207,6 @@ def add_vehicle():
             model=data['model'],
             year=data['year'],
             number_plate=data['number_plate'],
-            # current_mileage=current_mileage,
             last_service_date=datetime.strptime(data['last_service_date'], '%Y-%m-%d').date()
         )
         db.session.add(new_vehicle)
@@ -200,7 +222,6 @@ def add_vehicle():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-# **PATCH Route: Update a vehicle by ID**
 @app.route('/vehicles/<int:id>', methods=['PATCH'])
 def update_vehicle(id):
     vehicle = Vehicle.query.get(id)
@@ -210,15 +231,12 @@ def update_vehicle(id):
     data = request.get_json()
     if 'number_plate' in data:
         vehicle.number_plate = data['number_plate']
-    # if 'current_mileage' in data:
-    #     vehicle.current_mileage = data['current_mileage']
     if 'last_service_date' in data:
         vehicle.last_service_date = data['last_service_date']
 
     db.session.commit()
     return jsonify({'message': 'Vehicle updated successfully'}), 200
 
-# **DELETE Route: Delete a vehicle by ID**
 @app.route('/vehicles/<int:id>', methods=['DELETE'])
 def delete_vehicle(id):
     vehicle = Vehicle.query.get(id)
@@ -230,50 +248,12 @@ def delete_vehicle(id):
     
     return jsonify({'message': 'Vehicle deleted successfully'}), 200
 
-# # Vehicles Routes
-# @app.route("/vehicles", methods=["GET", "POST"])
-# def handle_vehicles():
-#     if request.method == "GET":
-#         vehicles = [vehicle.to_dict() for vehicle in Vehicle.query.all()]
-#         return make_response(jsonify(vehicles), 200)
-
-#     if request.method == "POST":
-#         required_fields = ["make", "model", "year", "client_id"]
-#         validation_error = validate_request_data(request.json, required_fields)
-#         if validation_error:
-#             return validation_error
-
-#         new_vehicle = Vehicle(**request.json)
-#         db.session.add(new_vehicle)
-#         db.session.commit()
-#         return make_response(jsonify(new_vehicle.to_dict()), 201)
-
-# @app.route("/vehicles/<int:id>", methods=["GET", "PATCH", "DELETE"])
-# def handle_vehicle_by_id(id):
-#     vehicle = db.session.get(Vehicle, id)
-#     if not vehicle:
-#         return make_response(jsonify({"error": "Vehicle not found"}), 404)
-
-#     if request.method == "GET":
-#         return make_response(jsonify(vehicle.to_dict()), 200)
-
-#     if request.method == "PATCH":
-#         for key, value in request.json.items():
-#             setattr(vehicle, key, value)
-#         db.session.commit()
-#         return make_response(jsonify(vehicle.to_dict()), 200)
-
-#     if request.method == "DELETE":
-#         db.session.delete(vehicle)
-#         db.session.commit()
-#         return make_response(jsonify({"message": "Vehicle deleted"}), 204)
-
-### MECHANICS ROUTES ###
+# Mechanics Routes
 @app.route("/mechanics", methods=["GET", "POST"])
 def handle_mechanics():
     if request.method == "GET":
         mechanics = [mechanic.to_dict() for mechanic in Mechanic.query.all()]
-        return make_response(jsonify(mechanics), 200)
+        return make_response(jsonify(mechanics)), 200
 
     if request.method == "POST":
         required_fields = ["name", "employee_id"]
