@@ -36,11 +36,6 @@ const CarDetails = () => {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new Error("Received non-JSON response");
-                }
-                
                 const data = await response.json();
                 setVehicles(data);
             } catch (err) {
@@ -53,6 +48,14 @@ const CarDetails = () => {
     
         fetchVehicles();
     }, [navigate]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewVehicle(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -128,19 +131,13 @@ const CarDetails = () => {
         return 0;
     };
 
-    // const getStatusLabel = (vehicle) => {
-    //     if (vehicle.serviceDue) return 'Service Due';
-    //     if (vehicle.needsAttention) return 'Needs Attention';
-    //     return 'Good Condition';
-    // };
-
     if (loading) return <div className="car-details-container">Loading...</div>;
     if (error) return <div className="car-details-container">Error: {error}</div>;
 
     return (
         <div className="car-details-container">
             <div className="header-section">
-                <button className="add-vehicle-button"onClick={() => setShowModal(true)} > Add Vehicle</button>
+                <button className="add-vehicle-button" onClick={() => setShowModal(true)}>Add Vehicle</button>
             </div>
             
             <div className="search-filter-container">
@@ -179,30 +176,21 @@ const CarDetails = () => {
                     <div key={vehicle.id} className="vehicle-card">
                         <div className="vehicle-header">
                             <h3>{vehicle.make} {vehicle.model} ({vehicle.year})</h3>
-                            
                         </div>
                         
                         <div className="vehicle-details">
                             <div className="detail-column">
-                                <p><strong>Number Plate:</strong> <span  className="Number">{vehicle.number_plate}</span></p>
+                                <p><strong>Number Plate:</strong> <span className="Number">{vehicle.number_plate}</span></p>
                                 <p><strong>Last Service:</strong> {vehicle.last_service_date || 'N/A'}</p>
-                                {vehicle.mileage && <p><strong>Mileage:</strong> {vehicle.mileage.toLocaleString()} miles</p>}
                             </div>
-                            {/*<div className="detail-column">
-                                <p><strong>Next Due:</strong> {vehicle.next_service_date || 'N/A'}</p>
-                            </div>*/}
                             <div className="action-buttons">
-                                {/* <button>History</button> */}
                                 <button onClick={() => navigate("/service-management")}>Service</button>
                             </div>
                         </div>
-                        
-                        
                     </div>
                 ))}
             </div>
 
-            {/* Add Vehicle Modal */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">
@@ -256,17 +244,6 @@ const CarDetails = () => {
                                 />
                             </div>
                             
-                            {/* <div className="form-group">
-                                <label>Current Mileage</label>
-                                <input
-                                    type="number"
-                                    name="mileage"
-                                    value={newVehicle.mileage}
-                                    onChange={handleInputChange}
-                                    placeholder="e.g. 25000"
-                                />
-                            </div> */}
-                            
                             <div className="form-group">
                                 <label>Last Service Date</label>
                                 <input
@@ -274,7 +251,6 @@ const CarDetails = () => {
                                     name="last_service_date"
                                     value={newVehicle.last_service_date}
                                     onChange={handleInputChange}
-                                    placeholder="mm/dd/yyyy"
                                 />
                             </div>
                             
