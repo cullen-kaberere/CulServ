@@ -18,6 +18,7 @@ const CarDetails = () => {
         last_service_date: ''
     });
 
+    // Fetch vehicles on component mount
     useEffect(() => {
         const fetchVehicles = async () => {
             try {
@@ -49,6 +50,7 @@ const CarDetails = () => {
         fetchVehicles();
     }, [navigate]);
 
+    // Handle input changes for the form
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewVehicle(prev => ({
@@ -57,6 +59,7 @@ const CarDetails = () => {
         }));
     };
 
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         const user = JSON.parse(localStorage.getItem('user'));
@@ -82,12 +85,7 @@ const CarDetails = () => {
     
             if (!response.ok) {
                 const errorText = await response.text();
-                try {
-                    const errorData = JSON.parse(errorText);
-                    throw new Error(errorData.error || 'Failed to add vehicle');
-                } catch {
-                    throw new Error(errorText || 'Failed to add vehicle');
-                }
+                throw new Error(errorText || 'Failed to add vehicle');
             }
     
             const addedVehicle = await response.json();
@@ -106,6 +104,7 @@ const CarDetails = () => {
         }
     };
 
+    // Filter vehicles based on search term and filter
     const filteredVehicles = vehicles.filter(vehicle => {
         if (filter !== 'All Vehicles') {
             if (filter === 'Service Due' && !vehicle.serviceDue) return false;
@@ -124,6 +123,7 @@ const CarDetails = () => {
         return true;
     });
 
+    // Count vehicles by status
     const getVehicleCount = (status) => {
         if (status === 'All Vehicles') return vehicles.length;
         if (status === 'Service Due') return vehicles.filter(v => v.serviceDue).length;
@@ -137,7 +137,12 @@ const CarDetails = () => {
     return (
         <div className="car-details-container">
             <div className="header-section">
-                <button className="add-vehicle-button" onClick={() => setShowModal(true)}>Add Vehicle</button>
+                <button 
+                    className="add-vehicle-button" 
+                    onClick={() => setShowModal(true)}
+                >
+                    Add Vehicle
+                </button>
             </div>
             
             <div className="search-filter-container">
@@ -150,24 +155,15 @@ const CarDetails = () => {
                 />
                 
                 <div className="filter-tabs">
-                    <button 
-                        className={filter === 'All Vehicles' ? 'active' : ''}
-                        onClick={() => setFilter('All Vehicles')}
-                    >
-                        All Vehicles ({getVehicleCount('All Vehicles')})
-                    </button>
-                    <button 
-                        className={filter === 'Service Due' ? 'active' : ''}
-                        onClick={() => setFilter('Service Due')}
-                    >
-                        Service Due ({getVehicleCount('Service Due')})
-                    </button>
-                    <button 
-                        className={filter === 'Needs Attention' ? 'active' : ''}
-                        onClick={() => setFilter('Needs Attention')}
-                    >
-                        Needs Attention ({getVehicleCount('Needs Attention')})
-                    </button>
+                    {['All Vehicles', 'Service Due', 'Needs Attention'].map((status) => (
+                        <button 
+                            key={status}
+                            className={filter === status ? 'active' : ''}
+                            onClick={() => setFilter(status)}
+                        >
+                            {status} ({getVehicleCount(status)})
+                        </button>
+                    ))}
                 </div>
             </div>
             
@@ -191,58 +187,25 @@ const CarDetails = () => {
                 ))}
             </div>
 
+            {/* Add Vehicle Modal */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h2>Add New Vehicle</h2>
                         <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label>Make</label>
-                                <input
-                                    type="text"
-                                    name="make"
-                                    value={newVehicle.make}
-                                    onChange={handleInputChange}
-                                    placeholder="e.g. Toyota"
-                                    required
-                                />
-                            </div>
-                            
-                            <div className="form-group">
-                                <label>Model</label>
-                                <input
-                                    type="text"
-                                    name="model"
-                                    value={newVehicle.model}
-                                    onChange={handleInputChange}
-                                    placeholder="e.g. Camry"
-                                    required
-                                />
-                            </div>
-                            
-                            <div className="form-group">
-                                <label>Year</label>
-                                <input
-                                    type="text"
-                                    name="year"
-                                    value={newVehicle.year}
-                                    onChange={handleInputChange}
-                                    placeholder="e.g. 2023"
-                                    required
-                                />
-                            </div>
-                            
-                            <div className="form-group">
-                                <label>Number Plate</label>
-                                <input
-                                    type="text"
-                                    name="number_plate"
-                                    value={newVehicle.number_plate}
-                                    onChange={handleInputChange}
-                                    placeholder="e.g. KDN1234G"
-                                    required
-                                />
-                            </div>
+                            {['make', 'model', 'year', 'number_plate'].map((field) => (
+                                <div key={field} className="form-group">
+                                    <label>{field.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}</label>
+                                    <input
+                                        type={field === 'year' ? 'number' : 'text'}
+                                        name={field}
+                                        value={newVehicle[field]}
+                                        onChange={handleInputChange}
+                                        placeholder={`e.g. ${field === 'make' ? 'Toyota' : field === 'model' ? 'Camry' : field === 'year' ? '2023' : 'KDN1234G'}`}
+                                        required
+                                    />
+                                </div>
+                            ))}
                             
                             <div className="form-group">
                                 <label>Last Service Date</label>
