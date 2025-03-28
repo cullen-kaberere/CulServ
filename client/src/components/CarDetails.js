@@ -15,15 +15,17 @@ const CarDetails = () => {
         model: '',
         year: '',
         number_plate: '',
-        // current_mileage: '',
         last_service_date: ''
     });
 
     useEffect(() => {
         const fetchVehicles = async () => {
             try {
-                const response = await fetch('/vehicles', {
-                    credentials: 'include'
+                const response = await fetch('https://culserv.onrender.com/vehicles', {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
                 });
                 
                 if (!response.ok) {
@@ -31,12 +33,18 @@ const CarDetails = () => {
                         navigate('/login');
                         return;
                     }
-                    throw new Error('Failed to fetch vehicles');
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error("Received non-JSON response");
                 }
                 
                 const data = await response.json();
                 setVehicles(data);
             } catch (err) {
+                console.error('Fetch error:', err);
                 setError(err.message);
             } finally {
                 setLoading(false);
@@ -45,14 +53,6 @@ const CarDetails = () => {
     
         fetchVehicles();
     }, [navigate]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewVehicle(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -64,41 +64,41 @@ const CarDetails = () => {
         }
     
         try {
-            const response = await fetch('/vehicles', {
+            const response = await fetch('https://culserv.onrender.com/vehicles', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    ...newVehicle,
                     client_id: user.id,
-                    make: newVehicle.make,
-                    model: newVehicle.model,
-                    year: newVehicle.year,
-                    number_plate: newVehicle.number_plate,
-                    // current_mileage: newVehicle.current_mileage ? parseInt(newVehicle.current_mileage, 10) : null,
-                    last_service_date: newVehicle.last_service_date
+                    year: parseInt(newVehicle.year, 10),
                 }),
                 credentials: 'include'
             });
     
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to add vehicle');
+                const errorText = await response.text();
+                try {
+                    const errorData = JSON.parse(errorText);
+                    throw new Error(errorData.error || 'Failed to add vehicle');
+                } catch {
+                    throw new Error(errorText || 'Failed to add vehicle');
+                }
             }
     
             const addedVehicle = await response.json();
-            setVehicles(prev => [...prev, addedVehicle]);
+            setVehicles(prev => [...prev, addedVehicle.vehicle || addedVehicle]);
             setShowModal(false);
-    
             setNewVehicle({
                 make: '',
                 model: '',
                 year: '',
                 number_plate: '',
-                // current_mileage: '',
                 last_service_date: ''
             });
         } catch (err) {
+            console.error('Submission error:', err);
             setError(err.message);
         }
     };
