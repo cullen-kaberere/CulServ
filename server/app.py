@@ -19,7 +19,7 @@ bcrypt = Bcrypt(app)
 
 # Configuration
 app.config.update(
-    SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URI', 'postgresql://culserve_user:FqzZW12q3qerlHUIQKwbBRvYbLGRQQHJ@dpg-d0msige3jp1c738l5smg-a.oregon-postgres.render.com/culserve'),
+    SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URI', 'postgresql://culserv_9mkn_user:xRVXOpksM7SKWhV5n2F4c9wngxEufwUq@dpg-d1jvkrvdiees73ck063g-a/culserv_9mkn'),
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     JSON_COMPACT=False,
     SECRET_KEY=os.environ.get('SECRET_KEY') or 'dev-key-change-me',
