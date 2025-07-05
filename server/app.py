@@ -17,7 +17,6 @@ from models import Vehicle, Service, Mechanic, Client, Employee, db
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-
 # Configuration
 app.config.update(
     SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URI', 'postgresql://culserv_9mkn_user:xRVXOpksM7SKWhV5n2F4c9wngxEufwUq@dpg-d1jvkrvdiees73ck063g-a.oregon-postgres.render.com/culserv_9mkn'),
